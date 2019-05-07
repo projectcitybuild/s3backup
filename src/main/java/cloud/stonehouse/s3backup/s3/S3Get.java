@@ -27,8 +27,9 @@ public class S3Get extends BukkitRunnable {
         try {
             S3Object s3object = s3Backup.getClient().getObject(s3Backup.getFileConfig().getBucket(),
                     s3Backup.getFileConfig().getPrefix() + backup);
-            S3ObjectInputStream inputStream = s3object.getObjectContent();
+            s3Backup.sendMessage(player, true, "Started download of " + backup);
 
+            S3ObjectInputStream inputStream = s3object.getObjectContent();
             File targetFile = new File(s3Backup.getFileConfig().getLocalPrefix() + File.separator + backup);
             OutputStream outStream;
             outStream = new FileOutputStream(targetFile);

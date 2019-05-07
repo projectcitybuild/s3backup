@@ -50,6 +50,12 @@ class CommandBackup implements TabExecutor {
                 } else {
                     return false;
                 }
+            } else if (args[0].equalsIgnoreCase("sign")) {
+                if (args.length == 2) {
+                    s3Backup.getS3Sign().sign(player, args[1]);
+                } else {
+                    return false;
+                }
             } else if (args[0].equalsIgnoreCase("get")) {
                 if (args.length == 2) {
                     new S3Get(s3Backup, player, args[1]).runTaskAsynchronously(s3Backup);
@@ -67,9 +73,10 @@ class CommandBackup implements TabExecutor {
     public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] args) {
         if (command.getName().equalsIgnoreCase("s3backup")) {
             List<String> types = new ArrayList<>();
-            types.add("list");
-            types.add("get");
             types.add("delete");
+            types.add("get");
+            types.add("list");
+            types.add("sign");
 
             if (args.length == 1) {
                 List<String> result = new ArrayList<>();
@@ -89,7 +96,8 @@ class CommandBackup implements TabExecutor {
             } else if (args.length == 2) {
                 List<String> result = new ArrayList<>();
 
-                if (args[0].equalsIgnoreCase("get") || args[0].equalsIgnoreCase("delete")) {
+                if (args[0].equalsIgnoreCase("get") || args[0].equalsIgnoreCase("delete") ||
+                        args[0].equalsIgnoreCase("sign")) {
                     ArrayList<String> backups = new S3List(s3Backup).list();
                     if (!args[1].equals("")) {
                         for (String backup : backups) {

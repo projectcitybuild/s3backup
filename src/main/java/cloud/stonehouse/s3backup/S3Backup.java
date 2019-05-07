@@ -1,9 +1,6 @@
 package cloud.stonehouse.s3backup;
 
-import cloud.stonehouse.s3backup.s3.S3Client;
-import cloud.stonehouse.s3backup.s3.S3Delete;
-import cloud.stonehouse.s3backup.s3.S3List;
-import cloud.stonehouse.s3backup.s3.S3Put;
+import cloud.stonehouse.s3backup.s3.*;
 import com.amazonaws.services.s3.AmazonS3;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -19,6 +16,7 @@ public class S3Backup extends JavaPlugin {
     private S3Delete s3Delete;
     private S3List s3List;
     private S3Put s3Put;
+    private S3Sign s3Sign;
 
     @Override
     public void onEnable() {
@@ -28,6 +26,7 @@ public class S3Backup extends JavaPlugin {
         this.s3Delete = new S3Delete(this);
         this.s3List = new S3List(this);
         this.s3Put = new S3Put(this);
+        this.s3Sign = new S3Sign(this);
 
         if (new File(this.getFileConfig().getLocalPrefix()).mkdir()) {
             this.sendMessage(null, true, "Created backup directory.");
@@ -74,6 +73,10 @@ public class S3Backup extends JavaPlugin {
 
     S3Put getS3Put() {
         return s3Put;
+    }
+
+    S3Sign getS3Sign() {
+        return s3Sign;
     }
 
     public void sendMessage(Player player, boolean server, String message) {
