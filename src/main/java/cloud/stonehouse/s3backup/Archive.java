@@ -7,43 +7,39 @@ import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class Archive {
+class Archive {
 
-    private S3Backup s3Backup;
-    private String localPrefix;
+    private final S3Backup s3Backup;
 
-    public Archive(S3Backup s3Backup) {
+    Archive(S3Backup s3Backup) {
         this.s3Backup = s3Backup;
-        this.localPrefix = s3Backup.getFileConfig().getString("local-prefix");
     }
 
-    public void zipFolder(File srcFolder, File destZipFile) throws Exception {
-        try (FileOutputStream fileWriter = new FileOutputStream(destZipFile);
-             ZipOutputStream zip = new ZipOutputStream(fileWriter)) {
+    void zipFolder(File srcFolder, File dstZipFile) throws Exception {
+        ZipOutputStream zip = new ZipOutputStream(new FileOutputStream(dstZipFile));
+        addFolder(srcFolder, srcFolder, zip);
+    }
 
-            addFolder(srcFolder, srcFolder, zip);
+    void removeFile(File srcFile) {
+        if (!srcFile.delete()) {
+            s3Backup.sendMessage(null, true, "Failed to delete temporary file " + srcFile);
         }
-    }
-
-    public void removeFile(File srcFile) {
-        srcFile.delete();
     }
 
     private void addFile(File rootPath, File srcFile, ZipOutputStream zip) throws Exception {
         if (srcFile.isDirectory()) {
-            if (!srcFile.getCanonicalPath().endsWith(localPrefix)) {
+            if (!srcFile.getCanonicalPath().endsWith(s3Backup.getFileConfig().getLocalPrefix())) {
                 addFolder(rootPath, srcFile, zip);
             }
         } else {
             byte[] buf = new byte[1024];
             int len;
 
-            try (FileInputStream in = new FileInputStream(srcFile)) {
-                zip.putNextEntry(new ZipEntry(srcFile.getPath().replace(rootPath.getPath() + File.separator, "")));
+            FileInputStream in = new FileInputStream(srcFile);
+            zip.putNextEntry(new ZipEntry(srcFile.getPath().replace(rootPath.getPath() + File.separator, "")));
 
-                while ((len = in.read(buf)) > 0) {
-                    zip.write(buf, 0, len);
-                }
+            while ((len = in.read(buf)) > 0) {
+                zip.write(buf, 0, len);
             }
         }
     }

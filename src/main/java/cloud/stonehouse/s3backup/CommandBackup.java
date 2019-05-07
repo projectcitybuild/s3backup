@@ -1,18 +1,21 @@
 package cloud.stonehouse.s3backup;
 
+import cloud.stonehouse.s3backup.s3.S3Get;
+import cloud.stonehouse.s3backup.s3.S3List;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class CommandBackup implements TabExecutor {
+class CommandBackup implements TabExecutor {
 
-    private S3Backup s3Backup;
+    private final S3Backup s3Backup;
 
-    public CommandBackup(S3Backup s3Backup) {
+    CommandBackup(S3Backup s3Backup) {
         this.s3Backup = s3Backup;
     }
 
@@ -29,32 +32,21 @@ public class CommandBackup implements TabExecutor {
         } else {
             if (args[0].equalsIgnoreCase("list")) {
                 try {
-                    ArrayList<String> backups = new S3List(s3Backup).list();
+                    ArrayList<String> backups = s3Backup.getS3List().list();
                     if (backups.size() == 0) {
-                        if (player != null) {
-                            player.sendMessage("§7[§es3backup§7] There are no backups to list.");
-                        } else {
-                            s3Backup.getLogger().info("There are no backups to list.");
-                        }
+                        s3Backup.sendMessage(player, true, "There are no backups to list.");
                     } else {
                         for (String backup : backups) {
-                            if (player != null) {
-                                player.sendMessage("§7[§es3backup§7] " + backup);
-                            } else {
-                                s3Backup.getLogger().info(backup);
-                            }
+                            s3Backup.sendMessage(player, true, backup);
                         }
                     }
                 } catch (Exception e) {
-                    if (player != null) {
-                        player.sendMessage("§7[§es3backup§7] Error retrieving backup list: " + e.getLocalizedMessage());
-                    } else {
-                        s3Backup.exception(e);
-                    }
+                    s3Backup.sendMessage(player, false, "Error retrieving backup: " + e.getLocalizedMessage());
+                    s3Backup.exception(e);
                 }
             } else if (args[0].equalsIgnoreCase("delete")) {
                 if (args.length == 2) {
-                    new S3Delete(s3Backup, player, args[1]).delete();
+                    s3Backup.getS3Delete().delete(player, args[1]);
                 } else {
                     return false;
                 }
@@ -88,8 +80,10 @@ public class CommandBackup implements TabExecutor {
                             result.add(type);
                         }
                     }
+                    Collections.sort(result);
                     return result;
                 } else {
+                    Collections.sort(types);
                     return types;
                 }
             } else if (args.length == 2) {
@@ -103,14 +97,15 @@ public class CommandBackup implements TabExecutor {
                                 result.add(backup);
                             }
                         }
+                        Collections.sort(result);
                         return result;
                     } else {
+                        Collections.sort(backups);
                         return backups;
                     }
                 }
             }
         }
-
         return null;
     }
 }
