@@ -23,7 +23,7 @@ class Backup extends BukkitRunnable {
     @Override
     public void run() {
         String archiveName = new SimpleDateFormat(s3Backup.getFileConfig().getBackupDateFormat())
-                .format(new Date() + ".zip");
+                .format(new Date()) + ".zip";
         String localPrefix = s3Backup.getFileConfig().getLocalPrefix();
 
         Bukkit.getScheduler().callSyncMethod(s3Backup, () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-off"));
@@ -50,14 +50,10 @@ class Backup extends BukkitRunnable {
 
         if (maxBackups > 0) {
             ArrayList<String> backups = new S3List(s3Backup).list();
-            if (backups.size() > maxBackups) {
-                int removed = 0;
-                while (removed < (backups.size() - maxBackups)) {
-                    String remove = backups.get(0);
-                    backups.remove(0);
-                    s3Backup.getS3Delete().delete(player, remove);
-                    removed++;
-                }
+            while (backups.size() > maxBackups) {
+                String remove = backups.get(0);
+                backups.remove(0);
+                s3Backup.getS3Delete().delete(player, remove);
             }
         }
     }
