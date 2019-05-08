@@ -2,11 +2,17 @@
 A simple backup plugin for Spigot that uploads to s3.
 
 ## Requirements
- - An AWS account
- - An IAM user with programmatic access keys
- - An AWS s3 bucket
- - An IAM group that the IAM user is a member of
- - A policy assigned to the IAM user's group to grant access to the s3 bucket
+ - An AWS account.
+ - An AWS s3 bucket.
+
+ ### IAM user credentials
+ - An IAM user with programmatic access keys.
+ - An IAM group where the IAM user is a member.
+ - A policy assigned to the IAM user's group to grant access to the s3 bucket.
+
+### IAM profile (only for servers running on EC2)
+- An instance profile attached to the EC2 instance where the server is running.
+- A policy assigned to the profile to grant access to the s3 bucket.
 
 ## Plugin configuration
 This configuration will produce a `zip` backup of the server directory every 4 hours and upload it to your s3 bucket with the path `my-backup-bucket/s3backup/00-00-0000-00-00-00.zip`.
@@ -26,18 +32,26 @@ prefix: s3backup/
 ```
 
 ## Commands
-- `/s3backup` - Initates a manual backup.
+- `/s3backup` - Displays command usage.
+- `/s3backup backup` - Initiates a manual backup.
 - `/s3backup list` - Lists the backups in s3.
 - `/s3backup get [backup]` - Downloads the specified backup to the `local-prefix` directory specified in the configuration.
 - `/s3backup delete [backup]` - Deletes the specified backup in s3.
+- `/s3backup sign [backup]` - Generates a temporary URL to download a backup locally.
 
 All commands auto-complete including the `get` and `delete` commands to fill in backup names.
 
 ## Permissions
-`s3backup.use` - Allows the use of the `/s3backup` commands and sub-commands.
+- `s3backup` - Allows displaying command usage. Granted by any other permission.
+- `s3backup.backup` - Allows creation of backups.
+- `s3backup.delete` - Allows deletion of backups.
+- `s3backup.get` - Allows downloading backups to the server backup directory.
+- `s3backup.list` - Allows the listing of backups.
+- `s3backup.sign` - Allows downloading backups locally via generating a signed URL.
+- `s3backup.*` - Grants all of the above permissions.
 
 ## Example IAM policy
-This policy will allow `list`, `get`, `put` and `delete` requests on the s3 bucket `my-backup-bucket` under the `s3backup` prefix. This policy is all that is required for the s3backup plugin.
+This policy will allow `list`, `get`, `put` and `delete` requests on the s3 bucket `my-backup-bucket` under the `s3backup` prefix. These are the only actions required for s3backup.
 
 You will not need to retrict the `ListBucket` action if you are not using a `prefix`.
 ```
