@@ -19,17 +19,27 @@ public class S3Client {
 
     private AmazonS3 buildClient() {
         try {
-            AWSCredentials credentials = new BasicAWSCredentials(
-                    s3Backup.getFileConfig().getAccessKeyId(),
-                    s3Backup.getFileConfig().getAccessKeySecret()
-            );
+            String accessKeyId = s3Backup.getFileConfig().getAccessKeyId();
+            String accessKeySecret = s3Backup.getFileConfig().getAccessKeySecret();
 
-            client = AmazonS3ClientBuilder
-                    .standard()
-                    .withCredentials(new AWSStaticCredentialsProvider(credentials))
-                    .withRegion(s3Backup.getFileConfig().getRegion())
-                    .build();
+            if (accessKeyId.equals("") || accessKeySecret.equals("")) {
+                client = AmazonS3ClientBuilder
+                        .standard()
+                        .withRegion(s3Backup.getFileConfig().getRegion())
+                        .build();
+            } else {
+                AWSCredentials credentials = new BasicAWSCredentials(
+                        accessKeyId,
+                        accessKeySecret
+                );
 
+                client = AmazonS3ClientBuilder
+                        .standard()
+                        .withCredentials(new AWSStaticCredentialsProvider(credentials))
+                        .withRegion(s3Backup.getFileConfig().getRegion())
+                        .build();
+
+            }
             return client;
         } catch (Exception e) {
             s3Backup.exception(e);

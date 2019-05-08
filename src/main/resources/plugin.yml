@@ -5,10 +5,39 @@ api-version: '1.14'
 
 commands:
   s3backup:
-    description: Initiate a backup. Optional list/get/delete subcommands.
-    usage: /s3backup (list) (get|delete (backup))
-    permission: s3backup.use
+    description: Displays info for s3backup.
+    usage: §7[§es3backup§7] /s3backup [<backup list>] [<get delete sign> <backup>]
+    permission: s3backup
 
 permissions:
-  s3backup.use:
-    description: Allows the use of the s3backup commands.
+  s3backup.*:
+    description: Allow the use of all s3backup commands.
+    children:
+      s3backup: true
+      s3backup.backup: true
+      s3backup.delete: true
+      s3backup.get: true
+      s3backup.list: true
+      s3backup.sign: true
+  s3backup:
+    description: Allow displaying s3backup info.
+  s3backup.backup:
+    description: Allow creation of backups.
+    children:
+      s3backup: true
+  s3backup.delete:
+    description: Allow deletion of backups.
+    children:
+      s3backup: true
+  s3backup.get:
+    description: Allow downloading backups to the server backup directory.
+    children:
+      s3backup: true
+  s3backup.list:
+    description: Allow the listing of backups.
+    children:
+      s3backup: true
+  s3backup.sign:
+    description: Allow downloading backups locally by generating a signed URL.
+    children:
+      s3backup: true

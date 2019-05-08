@@ -39,22 +39,22 @@ class Backup extends BukkitRunnable {
 
             s3Backup.sendMessage(player, true, "Backup complete.");
 
+            int maxBackups = s3Backup.getFileConfig().getMaxBackups();
+
+            if (maxBackups > 0) {
+                ArrayList<String> backups = new S3List(s3Backup).list();
+                while (backups.size() > maxBackups) {
+                    String remove = backups.get(0);
+                    backups.remove(0);
+                    s3Backup.getS3Delete().delete(player, remove);
+                }
+            }
+
         } catch (Exception e) {
             s3Backup.sendMessage(player, false, "Backup failed: " + e.getLocalizedMessage());
             s3Backup.exception(e);
         }
 
         Bukkit.getScheduler().callSyncMethod(s3Backup, () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-on"));
-
-        int maxBackups = s3Backup.getFileConfig().getMaxBackups();
-
-        if (maxBackups > 0) {
-            ArrayList<String> backups = new S3List(s3Backup).list();
-            while (backups.size() > maxBackups) {
-                String remove = backups.get(0);
-                backups.remove(0);
-                s3Backup.getS3Delete().delete(player, remove);
-            }
-        }
     }
 }

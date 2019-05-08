@@ -32,7 +32,7 @@ public class S3Backup extends JavaPlugin {
             this.sendMessage(null, true, "Created backup directory.");
         }
 
-        Objects.requireNonNull(this.getCommand("s3backup")).setExecutor(new CommandBackup(this));
+        Objects.requireNonNull(this.getCommand("s3backup")).setExecutor(new CommandS3Backup(this));
 
         new Scheduler(this).runTaskTimerAsynchronously(this,
                 20 * 60 * this.getFileConfig().getBackupInterval(),
@@ -77,6 +77,14 @@ public class S3Backup extends JavaPlugin {
 
     S3Sign getS3Sign() {
         return s3Sign;
+    }
+
+    boolean hasPermission(Player player, String permission) {
+        if (player != null) {
+            return player.hasPermission(permission);
+        } else {
+            return true;
+        }
     }
 
     public void sendMessage(Player player, boolean server, String message) {
