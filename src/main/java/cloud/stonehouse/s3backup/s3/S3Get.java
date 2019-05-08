@@ -25,24 +25,28 @@ public class S3Get extends BukkitRunnable {
     @Override
     public void run() {
         try {
-            S3Object s3object = s3Backup.getClient().getObject(s3Backup.getFileConfig().getBucket(),
-                    s3Backup.getFileConfig().getPrefix() + backup);
-            s3Backup.sendMessage(player, true, "Started download of " + backup);
+            String filePrefix = s3Backup.getFileConfig().getPrefix() + backup;
+            if (s3Backup.backupExists(filePrefix)) {
+                S3Object s3object = s3Backup.getClient().getObject(s3Backup.getFileConfig().getBucket(), filePrefix);
+                s3Backup.sendMessage(player, true, "Started download of " + backup);
 
-            S3ObjectInputStream inputStream = s3object.getObjectContent();
-            File targetFile = new File(s3Backup.getFileConfig().getLocalPrefix() + File.separator + backup);
-            OutputStream outStream;
-            outStream = new FileOutputStream(targetFile);
+                S3ObjectInputStream inputStream = s3object.getObjectContent();
+                File targetFile = new File(s3Backup.getFileConfig().getLocalPrefix() + File.separator + backup);
+                OutputStream outStream;
+                outStream = new FileOutputStream(targetFile);
 
-            byte[] buffer = new byte[8 * 1024];
-            int bytesRead;
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                outStream.write(buffer, 0, bytesRead);
+                byte[] buffer = new byte[8 * 1024];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    outStream.write(buffer, 0, bytesRead);
+                }
+                inputStream.close();
+                outStream.close();
+
+                s3Backup.sendMessage(player, true, backup + " downloaded to the local backup directory");
+            } else {
+                s3Backup.sendMessage(player, true, "Backup " + backup + " does not exist");
             }
-            inputStream.close();
-            outStream.close();
-
-            s3Backup.sendMessage(player, true, backup + " downloaded to the local backup directory.");
         } catch (Exception e) {
             s3Backup.sendMessage(player, false, "Backup download failed: " + e.getLocalizedMessage());
             s3Backup.exception(e);

@@ -53,7 +53,7 @@ All commands auto-complete including the `get` and `delete` commands to fill in 
 ## Example IAM policy
 This policy will allow `list`, `get`, `put` and `delete` requests on the s3 bucket `my-backup-bucket` under the `s3backup` prefix. These are the only actions required for s3backup.
 
-You will not need to retrict the `ListBucket` action if you are not using a `prefix`.
+The resource ARN will need to have the `prefix` appended if used as shown below.
 ```
 {
     "Version": "2012-10-17",
@@ -63,15 +63,9 @@ You will not need to retrict the `ListBucket` action if you are not using a `pre
             "Action": [
                 "s3:ListBucket"
             ],
-            "Condition": {
-                "StringLike": {
-                    "s3:prefix": [
-                        "s3backup/"
-                    ]
-                }
-            },
             "Resource": [
-                "arn:aws:s3:::my-backup-bucket*"
+                "arn:aws:s3:::my-backup-bucket"
+                "arn:aws:s3:::my-backup-bucket/*"
             ]
         },
         {

@@ -3,7 +3,6 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>cloud.stonehouse</groupId>
     <artifactId>s3backup</artifactId>
     <version>1.0-SNAPSHOT</version>
@@ -41,7 +40,6 @@
             </plugin>
         </plugins>
     </build>
-
     <repositories>
         <repository>
             <id>spigotmc-repo</id>
@@ -58,8 +56,7 @@
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-s3</artifactId>
-            <version>1.11.546</version>
+            <version>1.11.548</version>
         </dependency>
     </dependencies>
-
 </project>

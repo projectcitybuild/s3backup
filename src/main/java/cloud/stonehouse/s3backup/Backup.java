@@ -5,7 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.io.File;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,17 +30,16 @@ class Backup extends BukkitRunnable {
         Bukkit.getScheduler().callSyncMethod(s3Backup, () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-all"));
 
         try {
-            s3Backup.sendMessage(player, true, "Backup initiated.");
+            s3Backup.sendMessage(player, true, "Backup initiated");
+            String archivePath = localPrefix + "/" + archiveName;
 
-            s3Backup.getArchive().zipFolder(new File(s3Backup.getServer().getWorldContainer().getAbsolutePath()),
-                    new File(localPrefix + File.separator + archiveName));
+            s3Backup.getArchive().zipFile(Paths.get("").toAbsolutePath().normalize().toString(), archivePath);
             s3Backup.getS3Put().put(archiveName);
-            s3Backup.getArchive().removeFile(new File(localPrefix + File.separator + archiveName));
+            s3Backup.getArchive().deleteFile(archivePath);
 
-            s3Backup.sendMessage(player, true, "Backup complete.");
+            s3Backup.sendMessage(player, true, "Backup complete");
 
             int maxBackups = s3Backup.getFileConfig().getMaxBackups();
-
             if (maxBackups > 0) {
                 ArrayList<String> backups = new S3List(s3Backup).list();
                 while (backups.size() > maxBackups) {

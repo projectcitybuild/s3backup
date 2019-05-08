@@ -3,7 +3,7 @@ package cloud.stonehouse.s3backup;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.Objects;
+import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -15,38 +15,49 @@ class Archive {
         this.s3Backup = s3Backup;
     }
 
-    void zipFolder(File srcFolder, File dstZipFile) throws Exception {
-        ZipOutputStream zip = new ZipOutputStream(new FileOutputStream(dstZipFile));
-        addFolder(srcFolder, srcFolder, zip);
+    void zipFile(String sourceFile, String destinationFile) throws IOException {
+        FileOutputStream fos = new FileOutputStream(destinationFile);
+        ZipOutputStream zipOut = new ZipOutputStream(fos);
+        File fileToZip = new File(sourceFile);
+
+        zipFile(fileToZip, fileToZip.getName(), zipOut);
+        zipOut.close();
+        fos.close();
     }
 
-    void removeFile(File srcFile) {
-        if (!srcFile.delete()) {
-            s3Backup.sendMessage(null, true, "Failed to delete temporary file " + srcFile);
+    void deleteFile(String sourceFile) {
+        File fileToDelete = new File(sourceFile);
+        if (!fileToDelete.delete()) {
+            s3Backup.sendMessage(null, true, "Failed to delete temporary file " + sourceFile);
         }
     }
 
-    private void addFile(File rootPath, File srcFile, ZipOutputStream zip) throws Exception {
-        if (srcFile.isDirectory()) {
-            if (!srcFile.getCanonicalPath().endsWith(s3Backup.getFileConfig().getLocalPrefix())) {
-                addFolder(rootPath, srcFile, zip);
+    private void zipFile(File fileToZip, String fileName, ZipOutputStream zipOut) throws IOException {
+        if (fileToZip.isDirectory()) {
+            if (fileName.endsWith("/")) {
+                zipOut.putNextEntry(new ZipEntry(fileName));
+                zipOut.closeEntry();
+            } else {
+                zipOut.putNextEntry(new ZipEntry(fileName + "/"));
+                zipOut.closeEntry();
             }
-        } else {
-            byte[] buf = new byte[1024];
-            int len;
-
-            FileInputStream in = new FileInputStream(srcFile);
-            zip.putNextEntry(new ZipEntry(srcFile.getPath().replace(rootPath.getPath() + File.separator, "")));
-
-            while ((len = in.read(buf)) > 0) {
-                zip.write(buf, 0, len);
+            File[] children = fileToZip.listFiles();
+            for (File childFile : children) {
+                if (!childFile.getName().startsWith(s3Backup.getFileConfig().getLocalPrefix())) {
+                    zipFile(childFile, fileName + "/" + childFile.getName(), zipOut);
+                }
             }
+            return;
         }
-    }
+        FileInputStream fis = new FileInputStream(fileToZip);
+        ZipEntry zipEntry = new ZipEntry(fileName);
+        zipOut.putNextEntry(zipEntry);
+        byte[] bytes = new byte[1024];
+        int length;
 
-    private void addFolder(File rootPath, File srcFolder, ZipOutputStream zip) throws Exception {
-        for (File fileName : Objects.requireNonNull(srcFolder.listFiles())) {
-            addFile(rootPath, fileName, zip);
+        while ((length = fis.read(bytes)) >= 0) {
+            zipOut.write(bytes, 0, length);
         }
+        fis.close();
     }
 }

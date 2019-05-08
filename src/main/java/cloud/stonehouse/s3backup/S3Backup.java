@@ -29,7 +29,7 @@ public class S3Backup extends JavaPlugin {
         this.s3Sign = new S3Sign(this);
 
         if (new File(this.getFileConfig().getLocalPrefix()).mkdir()) {
-            this.sendMessage(null, true, "Created backup directory.");
+            this.sendMessage(null, true, "Created backup directory");
         }
 
         Objects.requireNonNull(this.getCommand("s3backup")).setExecutor(new CommandS3Backup(this));
@@ -37,6 +37,10 @@ public class S3Backup extends JavaPlugin {
         new Scheduler(this).runTaskTimerAsynchronously(this,
                 20 * 60 * this.getFileConfig().getBackupInterval(),
                 20 * 60 * this.getFileConfig().getBackupInterval());
+    }
+
+    public boolean backupExists(String filePrefix) {
+        return getClient().doesObjectExist(getFileConfig().getBucket(), filePrefix);
     }
 
     public void exception(Exception e) {
@@ -90,8 +94,7 @@ public class S3Backup extends JavaPlugin {
     public void sendMessage(Player player, boolean server, String message) {
         if (player != null) {
             player.sendMessage(getFileConfig().getChatPrefix() + message);
-        }
-        if (server) {
+        } else if (server) {
             getLogger().info(message);
         }
     }

@@ -17,17 +17,22 @@ public class S3Sign {
     }
 
     public void sign(Player player, String backup) {
-        Date expiration = new Date();
-        long expire = expiration.getTime();
-        expire += 1000 * 60 * 60;
-        expiration.setTime(expire);
+        String filePrefix = s3Backup.getFileConfig().getPrefix() + backup;
+        if (s3Backup.backupExists(filePrefix)) {
+            Date expiration = new Date();
+            long expire = expiration.getTime();
+            expire += 1000 * 60 * 60;
+            expiration.setTime(expire);
 
-        GeneratePresignedUrlRequest urlRequest =
-                new GeneratePresignedUrlRequest(s3Backup.getFileConfig().getBucket(),
-                        s3Backup.getFileConfig().getPrefix() + backup)
-                        .withMethod(HttpMethod.GET)
-                        .withExpiration(expiration);
-        URL url = s3Backup.getClient().generatePresignedUrl(urlRequest);
-        s3Backup.sendMessage(player, true, url.toString());
+            GeneratePresignedUrlRequest urlRequest =
+                    new GeneratePresignedUrlRequest(s3Backup.getFileConfig().getBucket(),
+                            s3Backup.getFileConfig().getPrefix() + backup)
+                            .withMethod(HttpMethod.GET)
+                            .withExpiration(expiration);
+            URL url = s3Backup.getClient().generatePresignedUrl(urlRequest);
+            s3Backup.sendMessage(player, true, url.toString());
+        } else {
+            s3Backup.sendMessage(player, true, "Backup " + backup + " does not exist");
+        }
     }
 }

@@ -12,10 +12,14 @@ public class S3Delete {
     }
 
     public void delete(Player player, String backup) {
+        String filePrefix = s3Backup.getFileConfig().getPrefix() + backup;
         try {
-            s3Backup.getClient().deleteObject(s3Backup.getFileConfig().getBucket(), s3Backup.getFileConfig()
-                    .getPrefix() + backup);
-            s3Backup.sendMessage(player, true, "Backup " + backup + " has been deleted.");
+            if (s3Backup.backupExists(backup)) {
+                s3Backup.getClient().deleteObject(s3Backup.getFileConfig().getBucket(), filePrefix);
+                s3Backup.sendMessage(player, true, "Backup " + backup + " has been deleted");
+            } else {
+                s3Backup.sendMessage(player, true, "Backup " + backup + " does not exist");
+            }
         } catch (Exception e) {
             s3Backup.sendMessage(player, false, "Backup delete failed: " + e.getLocalizedMessage());
             s3Backup.exception(e);
