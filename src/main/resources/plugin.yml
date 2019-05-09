@@ -6,7 +6,6 @@ api-version: '1.14'
 commands:
   s3backup:
     description: Displays info for s3backup.
-    usage: §7[§es3backup§7] /s3backup [<backup list>] [<get delete sign> <backup>]
     permission: s3backup
 
 permissions:

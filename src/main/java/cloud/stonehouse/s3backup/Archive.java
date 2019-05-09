@@ -1,5 +1,7 @@
 package cloud.stonehouse.s3backup;
 
+import org.bukkit.entity.Player;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -15,12 +17,12 @@ class Archive {
         this.s3Backup = s3Backup;
     }
 
-    void zipFile(String sourceFile, String destinationFile) throws IOException {
+    void zipFile(Player player, String sourceFile, String destinationFile) throws IOException {
         FileOutputStream fos = new FileOutputStream(destinationFile);
         ZipOutputStream zipOut = new ZipOutputStream(fos);
         File fileToZip = new File(sourceFile);
 
-        zipFile(fileToZip, fileToZip.getName(), zipOut);
+        zipFile(player, fileToZip, fileToZip.getName(), zipOut);
         zipOut.close();
         fos.close();
     }
@@ -32,7 +34,7 @@ class Archive {
         }
     }
 
-    private void zipFile(File fileToZip, String fileName, ZipOutputStream zipOut) throws IOException {
+    private void zipFile(Player player, File fileToZip, String fileName, ZipOutputStream zipOut) throws IOException {
         if (fileToZip.isDirectory()) {
             if (fileName.endsWith("/")) {
                 zipOut.putNextEntry(new ZipEntry(fileName));
@@ -43,8 +45,13 @@ class Archive {
             }
             File[] children = fileToZip.listFiles();
             for (File childFile : children) {
-                if (!childFile.getName().startsWith(s3Backup.getFileConfig().getLocalPrefix())) {
-                    zipFile(childFile, fileName + "/" + childFile.getName(), zipOut);
+                if (!childFile.getName().startsWith(s3Backup.getFileConfig().getLocalPrefix()) &&
+                        !childFile.getName().startsWith("s3backup")) {
+                    try {
+                        zipFile(player, childFile, fileName + "/" + childFile.getName(), zipOut);
+                    } catch (IOException e) {
+                        s3Backup.exception(player, "Error backing up file " + childFile.getName(), e);
+                    }
                 }
             }
             return;

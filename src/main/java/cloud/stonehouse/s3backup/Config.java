@@ -13,6 +13,7 @@ public class Config {
     private final String chatPrefix;
     private final String bucket;
     private final Boolean debug;
+    private final String helpString;
     private final String localPrefix;
     private final int maxBackups;
     private final String prefix;
@@ -29,6 +30,7 @@ public class Config {
         this.bucket = config.getString("bucket");
         this.chatPrefix = "§7[§es3backup§7] ";
         this.debug = config.getBoolean("debug");
+        this.helpString = "/s3backup [<backup list>] [<get delete sign> <backup>]";
         this.localPrefix = config.getString("local-prefix");
         this.maxBackups = config.getInt("max-backups");
         this.prefix = config.getString("prefix");
@@ -79,6 +81,10 @@ public class Config {
 
     Boolean getDebug() {
         return debug;
+    }
+
+    String getHelpString() {
+        return helpString;
     }
 
     public String getLocalPrefix() {

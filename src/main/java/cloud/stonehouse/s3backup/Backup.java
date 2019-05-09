@@ -32,7 +32,7 @@ class Backup extends BukkitRunnable {
             s3Backup.sendMessage(player, "Backup initiated");
             String archivePath = localPrefix + "/" + archiveName;
 
-            s3Backup.getArchive().zipFile(Paths.get("").toAbsolutePath().normalize().toString(), archivePath);
+            s3Backup.getArchive().zipFile(player, Paths.get("").toAbsolutePath().normalize().toString(), archivePath);
             s3Backup.getS3Put().put(archiveName);
             s3Backup.getArchive().deleteFile(archivePath);
 
@@ -40,7 +40,7 @@ class Backup extends BukkitRunnable {
 
             int maxBackups = s3Backup.getFileConfig().getMaxBackups();
             if (maxBackups > 0) {
-                ArrayList<String> backups = new S3List(s3Backup).list();
+                ArrayList<String> backups = new S3List(s3Backup).list(null, false);
                 while (backups.size() > maxBackups) {
                     String remove = backups.get(0);
                     backups.remove(0);
