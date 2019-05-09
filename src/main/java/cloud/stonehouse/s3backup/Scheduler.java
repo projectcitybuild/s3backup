@@ -8,7 +8,7 @@ class Scheduler extends BukkitRunnable {
 
     Scheduler(S3Backup s3Backup) {
         this.s3Backup = s3Backup;
-        s3Backup.sendMessage(null, true, "Backup scheduler started");
+        s3Backup.sendMessage(null, "Backup scheduler started");
     }
 
     @Override

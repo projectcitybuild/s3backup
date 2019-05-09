@@ -28,7 +28,7 @@ class Archive {
     void deleteFile(String sourceFile) {
         File fileToDelete = new File(sourceFile);
         if (!fileToDelete.delete()) {
-            s3Backup.sendMessage(null, true, "Failed to delete temporary file " + sourceFile);
+            s3Backup.sendMessage(null, "Failed to delete temporary file " + sourceFile);
         }
     }
 

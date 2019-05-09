@@ -32,25 +32,24 @@ class CommandS3Backup implements TabExecutor {
                 if (s3Backup.hasPermission(player, "s3backup.backup")) {
                     new Backup(s3Backup, player).runTaskAsynchronously(s3Backup);
                 } else {
-                    s3Backup.sendMessage(player, false, "You do not have permission for this command");
+                    s3Backup.sendMessage(player, "You do not have permission for this command");
                 }
             } else if (args[0].equalsIgnoreCase("list")) {
                 if (s3Backup.hasPermission(player, "s3backup.list")) {
                     try {
                         ArrayList<String> backups = s3Backup.getS3List().list();
                         if (backups.size() == 0) {
-                            s3Backup.sendMessage(player, true, "There are no backups to list");
+                            s3Backup.sendMessage(player, "There are no backups to list");
                         } else {
                             for (String backup : backups) {
-                                s3Backup.sendMessage(player, true, backup);
+                                s3Backup.sendMessage(player, backup);
                             }
                         }
                     } catch (Exception e) {
-                        s3Backup.sendMessage(player, false, "Error retrieving backup: " + e.getLocalizedMessage());
-                        s3Backup.exception(e);
+                        s3Backup.exception(player, "Error retrieving backup", e);
                     }
                 } else {
-                    s3Backup.sendMessage(player, false, "You do not have permission for this command");
+                    s3Backup.sendMessage(player, "You do not have permission for this command");
                 }
             } else if (args[0].equalsIgnoreCase("delete")) {
                 if (s3Backup.hasPermission(player, "s3backup.delete")) {
@@ -60,7 +59,7 @@ class CommandS3Backup implements TabExecutor {
                         return false;
                     }
                 } else {
-                    s3Backup.sendMessage(player, false, "You do not have permission for this command");
+                    s3Backup.sendMessage(player, "You do not have permission for this command");
                 }
             } else if (args[0].equalsIgnoreCase("sign")) {
                 if (s3Backup.hasPermission(player, "s3backup.sign")) {
@@ -70,7 +69,7 @@ class CommandS3Backup implements TabExecutor {
                         return false;
                     }
                 } else {
-                    s3Backup.sendMessage(player, false, "You do not have permission for this command");
+                    s3Backup.sendMessage(player, "You do not have permission for this command");
                 }
             } else if (args[0].equalsIgnoreCase("get")) {
                 if (s3Backup.hasPermission(player, "s3backup.get")) {
@@ -80,7 +79,7 @@ class CommandS3Backup implements TabExecutor {
                         return false;
                     }
                 } else {
-                    s3Backup.sendMessage(player, false, "You do not have permission for this command");
+                    s3Backup.sendMessage(player, "You do not have permission for this command");
                 }
             } else {
                 return false;

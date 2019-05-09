@@ -30,9 +30,9 @@ public class S3Sign {
                             .withMethod(HttpMethod.GET)
                             .withExpiration(expiration);
             URL url = s3Backup.getClient().generatePresignedUrl(urlRequest);
-            s3Backup.sendMessage(player, true, url.toString());
+            s3Backup.sendMessage(player, url.toString());
         } else {
-            s3Backup.sendMessage(player, true, "Backup " + backup + " does not exist");
+            s3Backup.sendMessage(player, "Backup " + backup + " does not exist");
         }
     }
 }

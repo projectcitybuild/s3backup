@@ -28,7 +28,7 @@ public class S3Get extends BukkitRunnable {
             String filePrefix = s3Backup.getFileConfig().getPrefix() + backup;
             if (s3Backup.backupExists(filePrefix)) {
                 S3Object s3object = s3Backup.getClient().getObject(s3Backup.getFileConfig().getBucket(), filePrefix);
-                s3Backup.sendMessage(player, true, "Started download of " + backup);
+                s3Backup.sendMessage(player, "Started download of " + backup);
 
                 S3ObjectInputStream inputStream = s3object.getObjectContent();
                 File targetFile = new File(s3Backup.getFileConfig().getLocalPrefix() + File.separator + backup);
@@ -43,13 +43,12 @@ public class S3Get extends BukkitRunnable {
                 inputStream.close();
                 outStream.close();
 
-                s3Backup.sendMessage(player, true, backup + " downloaded to the local backup directory");
+                s3Backup.sendMessage(player, backup + " downloaded to the local backup directory");
             } else {
-                s3Backup.sendMessage(player, true, "Backup " + backup + " does not exist");
+                s3Backup.sendMessage(player, "Backup " + backup + " does not exist");
             }
         } catch (Exception e) {
-            s3Backup.sendMessage(player, false, "Backup download failed: " + e.getLocalizedMessage());
-            s3Backup.exception(e);
+            s3Backup.exception(player, "Backup download failed", e);
         }
     }
 }

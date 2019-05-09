@@ -29,25 +29,29 @@ public class S3Backup extends JavaPlugin {
         this.s3Sign = new S3Sign(this);
 
         if (new File(this.getFileConfig().getLocalPrefix()).mkdir()) {
-            this.sendMessage(null, true, "Created backup directory");
+            this.sendMessage(null, "Created backup directory");
         }
 
         Objects.requireNonNull(this.getCommand("s3backup")).setExecutor(new CommandS3Backup(this));
 
-        new Scheduler(this).runTaskTimerAsynchronously(this,
-                20 * 60 * this.getFileConfig().getBackupInterval(),
-                20 * 60 * this.getFileConfig().getBackupInterval());
+        int backupInterval = this.getFileConfig().getBackupInterval();
+        new Scheduler(this).runTaskTimer(this,
+                20 * 60 * backupInterval,
+                20 * 60 * backupInterval);
     }
 
     public boolean backupExists(String filePrefix) {
         return getClient().doesObjectExist(getFileConfig().getBucket(), filePrefix);
     }
 
-    public void exception(Exception e) {
+    public void exception(Player player, String message, Exception e) {
         if (getFileConfig().getDebug()) {
             e.printStackTrace();
         } else {
             getLogger().warning(e.getLocalizedMessage());
+        }
+        if (player != null) {
+            this.sendMessage(player, message + ": " + e.getLocalizedMessage());
         }
     }
 
@@ -91,10 +95,10 @@ public class S3Backup extends JavaPlugin {
         }
     }
 
-    public void sendMessage(Player player, boolean server, String message) {
+    public void sendMessage(Player player, String message) {
         if (player != null) {
             player.sendMessage(getFileConfig().getChatPrefix() + message);
-        } else if (server) {
+        } else {
             getLogger().info(message);
         }
     }

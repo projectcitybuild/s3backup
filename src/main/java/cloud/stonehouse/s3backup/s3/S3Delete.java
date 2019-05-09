@@ -16,13 +16,12 @@ public class S3Delete {
         try {
             if (s3Backup.backupExists(backup)) {
                 s3Backup.getClient().deleteObject(s3Backup.getFileConfig().getBucket(), filePrefix);
-                s3Backup.sendMessage(player, true, "Backup " + backup + " has been deleted");
+                s3Backup.sendMessage(player, "Backup " + backup + " has been deleted");
             } else {
-                s3Backup.sendMessage(player, true, "Backup " + backup + " does not exist");
+                s3Backup.sendMessage(player, "Backup " + backup + " does not exist");
             }
         } catch (Exception e) {
-            s3Backup.sendMessage(player, false, "Backup delete failed: " + e.getLocalizedMessage());
-            s3Backup.exception(e);
+            s3Backup.exception(player, "Backup delete failed", e);
         }
     }
 }
