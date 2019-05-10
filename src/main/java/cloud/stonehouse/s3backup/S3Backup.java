@@ -51,7 +51,7 @@ public class S3Backup extends JavaPlugin {
             getLogger().warning(message + ": " + e.getLocalizedMessage());
         }
         if (player != null) {
-            this.sendMessage(player, message + ": " + e.getLocalizedMessage());
+            this.sendMessage(player, "§c" + message + ": " + e.getLocalizedMessage());
         }
     }
 

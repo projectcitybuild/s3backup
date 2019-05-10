@@ -42,7 +42,7 @@ public class S3Client {
             }
             return client;
         } catch (Exception e) {
-            s3Backup.exception(null, "", e);
+            s3Backup.exception(null, "Failed to build s3 client", e);
             return null;
         }
     }
