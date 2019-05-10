@@ -2,6 +2,7 @@ package cloud.stonehouse.s3backup;
 
 import cloud.stonehouse.s3backup.s3.*;
 import com.amazonaws.services.s3.AmazonS3;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -38,6 +39,8 @@ public class S3Backup extends JavaPlugin {
         new Scheduler(this).runTaskTimer(this,
                 20 * 60 * backupInterval,
                 20 * 60 * backupInterval);
+
+        new Metrics(this);
     }
 
     public boolean backupExists(String filePrefix) {
