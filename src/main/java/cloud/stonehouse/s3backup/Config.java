@@ -48,7 +48,7 @@ public class Config {
         config.addDefault("debug", false);
         config.addDefault("local-prefix", "s3backup");
         config.addDefault("max-backups", 20);
-        config.addDefault("prefix", "s3backup/");
+        config.addDefault("prefix", "");
         config.addDefault("region", "us-west-2");
         config.options().copyDefaults(true);
 
