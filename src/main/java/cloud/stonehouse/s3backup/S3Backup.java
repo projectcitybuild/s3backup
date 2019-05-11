@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.util.Objects;
@@ -14,6 +15,7 @@ public class S3Backup extends JavaPlugin {
 
     private Archive archive;
     private AmazonS3 client;
+    private BukkitTask scheduler;
     private Config config;
     private S3Delete s3Delete;
     private S3List s3List;
@@ -30,14 +32,14 @@ public class S3Backup extends JavaPlugin {
         this.s3Put = new S3Put(this);
         this.s3Sign = new S3Sign(this);
 
-        if (new File(this.getFileConfig().getLocalPrefix()).mkdir()) {
+        if (new File(this.getFileConfig().getBackupDir()).mkdir()) {
             this.sendMessage(null, "Created backup directory");
         }
 
         Objects.requireNonNull(this.getCommand("s3backup")).setExecutor(new CommandS3Backup(this));
 
         int backupInterval = this.getFileConfig().getBackupInterval();
-        new Scheduler(this).runTaskTimer(this,
+        this.scheduler = new Scheduler(this).runTaskTimer(this,
                 20 * 60 * backupInterval,
                 20 * 60 * backupInterval);
 
@@ -61,9 +63,11 @@ public class S3Backup extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        this.sendMessage(null, "Stopping backup scheduler");
+        scheduler.cancel();
     }
 
-    Archive getArchive() {
+    Archive archive() {
         return archive;
     }
 
@@ -75,19 +79,19 @@ public class S3Backup extends JavaPlugin {
         return this.config;
     }
 
-    S3Delete getS3Delete() {
+    S3Delete s3Delete() {
         return s3Delete;
     }
 
-    S3List getS3List() {
+    S3List s3List() {
         return s3List;
     }
 
-    S3Put getS3Put() {
+    S3Put s3Put() {
         return s3Put;
     }
 
-    S3Sign getS3Sign() {
+    S3Sign s3Sign() {
         return s3Sign;
     }
 
@@ -99,19 +103,19 @@ public class S3Backup extends JavaPlugin {
         }
     }
 
-    public void sendMessage(Player player, String message) {
-        if (player != null) {
-            player.sendMessage(getFileConfig().getChatPrefix() + message);
-        } else {
-            getLogger().info(message);
-        }
-    }
-
     boolean illegalString(String string) {
         return !Pattern.compile("^[a-zA-Z0-9-_]+$").matcher(string).matches();
     }
 
     boolean illegalPrefix(String string) {
         return !Pattern.compile("^[a-zA-Z0-9-_/]+$").matcher(string).matches();
+    }
+
+    public void sendMessage(Player player, String message) {
+        if (player != null) {
+            player.sendMessage(getFileConfig().getChatPrefix() + message);
+        } else {
+            getLogger().info(message);
+        }
     }
 }

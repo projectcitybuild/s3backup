@@ -21,8 +21,10 @@ class Backup extends BukkitRunnable {
         this.customPrefix = customPrefix;
         this.s3Backup = s3Backup;
         this.player = player;
+        s3Backup.sendMessage(player, "Saving worlds");
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-off");
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-all");
+        s3Backup.sendMessage(player, "Worlds saved");
     }
 
     @Override
@@ -40,14 +42,14 @@ class Backup extends BukkitRunnable {
 
             String archiveName = customPrefix + new SimpleDateFormat(s3Backup.getFileConfig().getBackupDateFormat())
                     .format(new Date()) + ".zip";
-            String localPrefix = s3Backup.getFileConfig().getLocalPrefix();
+            String backupDir = s3Backup.getFileConfig().getBackupDir();
 
             s3Backup.sendMessage(player, "Backup initiated");
-            String archivePath = localPrefix + File.separator + archiveName;
+            String archivePath = backupDir + File.separator + archiveName;
 
-            s3Backup.getArchive().zipFile(player, Paths.get("").toAbsolutePath().normalize().toString(), archivePath);
-            s3Backup.getS3Put().put(archiveName);
-            s3Backup.getArchive().deleteFile(archivePath);
+            s3Backup.archive().zipFile(player, Paths.get("").toAbsolutePath().normalize().toString(), archivePath);
+            s3Backup.s3Put().put(archiveName);
+            s3Backup.archive().deleteFile(archivePath);
 
             s3Backup.sendMessage(player, "Backup complete");
 
@@ -57,7 +59,7 @@ class Backup extends BukkitRunnable {
                 while (backups.size() > maxBackups) {
                     String remove = backups.get(0);
                     backups.remove(0);
-                    s3Backup.getS3Delete().delete(player, remove);
+                    s3Backup.s3Delete().delete(player, remove);
                 }
             }
 

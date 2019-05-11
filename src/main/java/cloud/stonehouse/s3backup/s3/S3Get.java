@@ -31,7 +31,7 @@ public class S3Get extends BukkitRunnable {
                 s3Backup.sendMessage(player, "Started download of " + backup);
 
                 S3ObjectInputStream inputStream = s3object.getObjectContent();
-                File targetFile = new File(s3Backup.getFileConfig().getLocalPrefix() + File.separator + backup);
+                File targetFile = new File(s3Backup.getFileConfig().getBackupDir() + File.separator + backup);
                 OutputStream outStream;
                 outStream = new FileOutputStream(targetFile);
 

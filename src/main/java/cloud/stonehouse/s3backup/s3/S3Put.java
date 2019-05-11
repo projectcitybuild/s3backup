@@ -20,7 +20,7 @@ public class S3Put {
                 s3Backup.getClient()).build();
         Upload upload = tm.upload(s3Backup.getFileConfig().getBucket(),
                 s3Backup.getFileConfig().getPrefix() + archiveName,
-                new File(s3Backup.getFileConfig().getLocalPrefix() + File.separator + archiveName));
+                new File(s3Backup.getFileConfig().getBackupDir() + File.separator + archiveName));
         upload.waitForUploadResult();
     }
 }

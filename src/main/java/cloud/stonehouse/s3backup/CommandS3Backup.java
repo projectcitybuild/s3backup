@@ -52,7 +52,7 @@ class CommandS3Backup implements TabExecutor {
                 }
             } else if (args[0].equalsIgnoreCase("list")) {
                 if (s3Backup.hasPermission(player, "s3backup.list")) {
-                    ArrayList<String> backups = s3Backup.getS3List().list(player, true);
+                    ArrayList<String> backups = s3Backup.s3List().list(player, true);
                     if (backups.size() == 0) {
                         s3Backup.sendMessage(player, "There are no backups to list");
                     }
@@ -62,7 +62,7 @@ class CommandS3Backup implements TabExecutor {
             } else if (args[0].equalsIgnoreCase("delete")) {
                 if (s3Backup.hasPermission(player, "s3backup.delete")) {
                     if (args.length == 2) {
-                        s3Backup.getS3Delete().delete(player, args[1]);
+                        s3Backup.s3Delete().delete(player, args[1]);
                     } else {
                         s3Backup.sendMessage(player, helpString);
                     }
@@ -72,7 +72,7 @@ class CommandS3Backup implements TabExecutor {
             } else if (args[0].equalsIgnoreCase("sign")) {
                 if (s3Backup.hasPermission(player, "s3backup.sign")) {
                     if (args.length == 2) {
-                        s3Backup.getS3Sign().sign(player, args[1]);
+                        s3Backup.s3Sign().sign(player, args[1]);
                     } else {
                         s3Backup.sendMessage(player, helpString);
                     }

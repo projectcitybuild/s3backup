@@ -45,7 +45,7 @@ class Archive {
             }
             File[] children = fileToZip.listFiles();
             for (File childFile : children) {
-                if (!childFile.getName().startsWith(s3Backup.getFileConfig().getLocalPrefix()) &&
+                if (!childFile.getName().startsWith(s3Backup.getFileConfig().getBackupDir()) &&
                         !childFile.getCanonicalPath().endsWith("s3backup/config.yml")) {
                     try {
                         zipFile(player, childFile, fileName + File.separator + childFile.getName(), zipOut);
