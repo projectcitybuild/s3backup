@@ -1,9 +1,15 @@
 # s3backup [![pipeline](https://gitlab.com/steve.stonehouse/s3backup/badges/master/pipeline.svg)](https://gitlab.com/steve-stonehouse/s3backup/commits/master)
-A simple backup plugin for Spigot that uploads to s3.
+A simple plugin for Spigot that uploads compressed backups of your server to s3.
+
+Also provides ways of downloading the backups for restoration.
 
 ## Requirements
  - An AWS account.
  - An AWS s3 bucket.
+
+The AWS resources are not managed by this plugin. They can either be created through the console or via tools such as Terraform. This is to leave the AWS side open ended. You can then configure things such as Emails through SES via bucket event notifications and s3 lifecycles yourself.
+
+It is recommended that default s3 encryption at rest or via a custom KMS key be enabled for the s3 bucket as plugin configurations and data can contain sensitive information.
 
  ### IAM user credentials
  - An IAM user with programmatic access keys.
@@ -17,10 +23,9 @@ A simple backup plugin for Spigot that uploads to s3.
 ## Plugin configuration
 This configuration will produce a `zip` backup of the server directory every 4 hours and upload it to your s3 bucket with the path `my-backup-bucket/s3backup/00-00-0000-00-00-00.zip`.
 
-The backup process will also remove any old backups beyond the `max-backups`. This can be set to `0` if you would like to manage this yourself.
+The backup process will also remove any old backups beyond the `max-backups`. This can be set to `0` if you would like to manage this yourself by other means.
 ```
 backup-date-format: dd-MM-yyyy-HH-mm-ss
-local-prefix: s3backup
 backup-interval: 240
 debug: false
 max-backups: 60
@@ -31,9 +36,11 @@ bucket: my-backup-bucket
 prefix: s3backup/
 ```
 
+Backup names (including date format) and bucket prefix must only consist of alphanumeric characters, hyphens or underscores. The prefix can also contain forward slashes to denote folders in s3 (useful for seperating multi-server backups in one bucket).
+
 ## Commands
 - `/s3backup` - Displays command usage.
-- `/s3backup backup` - Initiates a manual backup.
+- `/s3backup backup [name]` - Initiates a manual backup. Optional name to prepend.
 - `/s3backup list` - Lists the backups in s3.
 - `/s3backup get [backup]` - Downloads the specified backup to the `local-prefix` directory specified in the configuration.
 - `/s3backup delete [backup]` - Deletes the specified backup in s3.
