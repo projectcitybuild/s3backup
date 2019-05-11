@@ -30,7 +30,7 @@ public class Config {
         this.bucket = config.getString("bucket");
         this.chatPrefix = "§7[§es3backup§7] ";
         this.debug = config.getBoolean("debug");
-        this.helpString = "/s3backup [<backup list>] [<get delete sign> <backup>]";
+        this.helpString = "/s3backup [<backup <name>> <list>] [<get delete sign> <backup>]";
         this.localPrefix = config.getString("local-prefix");
         this.maxBackups = config.getInt("max-backups");
         this.prefix = config.getString("prefix");

@@ -32,7 +32,16 @@ class CommandS3Backup implements TabExecutor {
         if (args.length >= 1) {
             if (args[0].equalsIgnoreCase("backup")) {
                 if (s3Backup.hasPermission(player, "s3backup.backup")) {
-                    new Backup(s3Backup, player).runTaskAsynchronously(s3Backup);
+                    if (args.length == 2) {
+                        String name = args[1];
+                        if (name.contains("/")) {
+                            s3Backup.sendMessage(player, "File separators are not permitted in file names.");
+                        } else {
+                            new Backup(s3Backup, player, name + "-").runTaskAsynchronously(s3Backup);
+                        }
+                    } else {
+                        new Backup(s3Backup, player, "manual-").runTaskAsynchronously(s3Backup);
+                    }
                 } else {
                     s3Backup.sendMessage(player, "You do not have permission for this command");
                 }

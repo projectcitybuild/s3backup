@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.io.File;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,10 +13,12 @@ import java.util.Date;
 
 class Backup extends BukkitRunnable {
 
+    private final String customPrefix;
     private final S3Backup s3Backup;
     private final Player player;
 
-    Backup(S3Backup s3Backup, Player player) {
+    Backup(S3Backup s3Backup, Player player, String customPrefix) {
+        this.customPrefix = customPrefix;
         this.s3Backup = s3Backup;
         this.player = player;
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-off");
@@ -24,13 +27,13 @@ class Backup extends BukkitRunnable {
 
     @Override
     public void run() {
-        String archiveName = new SimpleDateFormat(s3Backup.getFileConfig().getBackupDateFormat())
+        String archiveName = customPrefix + new SimpleDateFormat(s3Backup.getFileConfig().getBackupDateFormat())
                 .format(new Date()) + ".zip";
         String localPrefix = s3Backup.getFileConfig().getLocalPrefix();
 
         try {
             s3Backup.sendMessage(player, "Backup initiated");
-            String archivePath = localPrefix + "/" + archiveName;
+            String archivePath = localPrefix + File.separator + archiveName;
 
             s3Backup.getArchive().zipFile(player, Paths.get("").toAbsolutePath().normalize().toString(), archivePath);
             s3Backup.getS3Put().put(archiveName);

@@ -13,6 +13,6 @@ class Scheduler extends BukkitRunnable {
 
     @Override
     public void run() {
-        new Backup(s3Backup, null).runTaskAsynchronously(s3Backup);
+        new Backup(s3Backup, null, "").runTaskAsynchronously(s3Backup);
     }
 }

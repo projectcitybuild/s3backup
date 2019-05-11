@@ -36,19 +36,19 @@ class Archive {
 
     private void zipFile(Player player, File fileToZip, String fileName, ZipOutputStream zipOut) throws IOException {
         if (fileToZip.isDirectory()) {
-            if (fileName.endsWith("/")) {
+            if (fileName.endsWith(File.separator)) {
                 zipOut.putNextEntry(new ZipEntry(fileName));
                 zipOut.closeEntry();
             } else {
-                zipOut.putNextEntry(new ZipEntry(fileName + "/"));
+                zipOut.putNextEntry(new ZipEntry(fileName + File.separator));
                 zipOut.closeEntry();
             }
             File[] children = fileToZip.listFiles();
             for (File childFile : children) {
                 if (!childFile.getName().startsWith(s3Backup.getFileConfig().getLocalPrefix()) &&
-                        !childFile.getName().startsWith("s3backup")) {
+                        !childFile.getCanonicalPath().endsWith("s3backup/config.yml")) {
                     try {
-                        zipFile(player, childFile, fileName + "/" + childFile.getName(), zipOut);
+                        zipFile(player, childFile, fileName + File.separator + childFile.getName(), zipOut);
                     } catch (IOException e) {
                         s3Backup.exception(player, "Error backing up file " + childFile.getName(), e);
                     }
