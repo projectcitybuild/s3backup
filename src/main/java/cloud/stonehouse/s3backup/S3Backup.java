@@ -24,26 +24,32 @@ public class S3Backup extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        this.config = new Config(this);
-        this.client = new S3Client(this).getClient();
-        this.archive = new Archive(this);
-        this.s3Delete = new S3Delete(this);
-        this.s3List = new S3List(this);
-        this.s3Put = new S3Put(this);
-        this.s3Sign = new S3Sign(this);
+        config = new Config(this);
+        client = new S3Client(this).getClient();
+        archive = new Archive(this);
+        s3Delete = new S3Delete(this);
+        s3List = new S3List(this);
+        s3Put = new S3Put(this);
+        s3Sign = new S3Sign(this);
 
-        if (new File(this.getFileConfig().getBackupDir()).mkdir()) {
+        if (new File(getFileConfig().getBackupDir()).mkdir()) {
             this.sendMessage(null, "Created backup directory");
         }
 
         Objects.requireNonNull(this.getCommand("s3backup")).setExecutor(new CommandS3Backup(this));
 
-        int backupInterval = this.getFileConfig().getBackupInterval();
-        this.scheduler = new Scheduler(this).runTaskTimer(this,
+        int backupInterval = getFileConfig().getBackupInterval();
+        scheduler = new Scheduler(this).runTaskTimer(this,
                 20 * 60 * backupInterval,
                 20 * 60 * backupInterval);
 
         new Metrics(this);
+    }
+
+    @Override
+    public void onDisable() {
+        sendMessage(null, "Stopping backup scheduler");
+        scheduler.cancel();
     }
 
     public boolean backupExists(String filePrefix) {
@@ -57,14 +63,8 @@ public class S3Backup extends JavaPlugin {
             getLogger().warning(message + ": " + e.getLocalizedMessage());
         }
         if (player != null) {
-            this.sendMessage(player, "§c" + message + ": " + e.getLocalizedMessage());
+            sendMessage(player, "§c" + message + ": " + e.getLocalizedMessage());
         }
-    }
-
-    @Override
-    public void onDisable() {
-        this.sendMessage(null, "Stopping backup scheduler");
-        scheduler.cancel();
     }
 
     Archive archive() {
@@ -72,11 +72,11 @@ public class S3Backup extends JavaPlugin {
     }
 
     public AmazonS3 getClient() {
-        return this.client;
+        return client;
     }
 
     public Config getFileConfig() {
-        return this.config;
+        return config;
     }
 
     S3Delete s3Delete() {

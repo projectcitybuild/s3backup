@@ -9,8 +9,8 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 
 public class S3Client {
 
-    private AmazonS3 client;
     private final S3Backup s3Backup;
+    private AmazonS3 client;
 
     public S3Client(S3Backup s3Backup) {
         this.s3Backup = s3Backup;
@@ -48,6 +48,6 @@ public class S3Client {
     }
 
     public AmazonS3 getClient() {
-        return this.client;
+        return client;
     }
 }
