@@ -34,7 +34,7 @@ class CommandS3Backup implements TabExecutor {
                 if (s3Backup.hasPermission(player, "s3backup.backup")) {
                     if (args.length == 2) {
                         String name = args[1];
-                        if (name.contains("/")) {
+                        if (name.contains("/") || name.contains("\\")) {
                             s3Backup.sendMessage(player, "File separators are not permitted in file names.");
                         } else {
                             new Backup(s3Backup, player, name + "-").runTaskAsynchronously(s3Backup);
