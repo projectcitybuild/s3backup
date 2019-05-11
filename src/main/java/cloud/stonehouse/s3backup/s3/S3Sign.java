@@ -19,18 +19,22 @@ public class S3Sign {
     public void sign(Player player, String backup) {
         String filePrefix = s3Backup.getFileConfig().getPrefix() + backup;
         if (s3Backup.backupExists(filePrefix)) {
-            Date expiration = new Date();
-            long expire = expiration.getTime();
-            expire += 1000 * 60 * 60;
-            expiration.setTime(expire);
+            try {
+                Date expiration = new Date();
+                long expire = expiration.getTime();
+                expire += 1000 * 60 * 60;
+                expiration.setTime(expire);
 
-            GeneratePresignedUrlRequest urlRequest =
-                    new GeneratePresignedUrlRequest(s3Backup.getFileConfig().getBucket(),
-                            s3Backup.getFileConfig().getPrefix() + backup)
-                            .withMethod(HttpMethod.GET)
-                            .withExpiration(expiration);
-            URL url = s3Backup.getClient().generatePresignedUrl(urlRequest);
-            s3Backup.sendMessage(player, url.toString());
+                GeneratePresignedUrlRequest urlRequest =
+                        new GeneratePresignedUrlRequest(s3Backup.getFileConfig().getBucket(),
+                                s3Backup.getFileConfig().getPrefix() + backup)
+                                .withMethod(HttpMethod.GET)
+                                .withExpiration(expiration);
+                URL url = s3Backup.getClient().generatePresignedUrl(urlRequest);
+                s3Backup.sendMessage(player, url.toString());
+            } catch (Exception e) {
+                s3Backup.exception(player, "Error generating a signed URL", e);
+            }
         } else {
             s3Backup.sendMessage(player, "Backup " + backup + " does not exist");
         }
