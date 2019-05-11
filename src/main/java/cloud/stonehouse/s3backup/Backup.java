@@ -27,11 +27,21 @@ class Backup extends BukkitRunnable {
 
     @Override
     public void run() {
-        String archiveName = customPrefix + new SimpleDateFormat(s3Backup.getFileConfig().getBackupDateFormat())
-                .format(new Date()) + ".zip";
-        String localPrefix = s3Backup.getFileConfig().getLocalPrefix();
-
         try {
+            String dateFormat = s3Backup.getFileConfig().getBackupDateFormat();
+            if (s3Backup.illegalString(dateFormat)) {
+                throw new StringFormatException("Invalid date format. Only alphanumeric characters, underscores and " +
+                        "hyphens are permitted. Please check config.yml");
+            }
+            if (s3Backup.illegalPrefix(s3Backup.getFileConfig().getPrefix())) {
+                throw new StringFormatException("Invalid prefix format. Only alphanumeric characters, underscores, " +
+                        "hyphens and forward slashes are permitted. Please check config.yml");
+            }
+
+            String archiveName = customPrefix + new SimpleDateFormat(s3Backup.getFileConfig().getBackupDateFormat())
+                    .format(new Date()) + ".zip";
+            String localPrefix = s3Backup.getFileConfig().getLocalPrefix();
+
             s3Backup.sendMessage(player, "Backup initiated");
             String archivePath = localPrefix + File.separator + archiveName;
 

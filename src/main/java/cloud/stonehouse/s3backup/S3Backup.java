@@ -8,6 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 public class S3Backup extends JavaPlugin {
 
@@ -104,5 +105,13 @@ public class S3Backup extends JavaPlugin {
         } else {
             getLogger().info(message);
         }
+    }
+
+    boolean illegalString(String string) {
+        return !Pattern.compile("^[a-zA-Z0-9-_]+$").matcher(string).matches();
+    }
+
+    boolean illegalPrefix(String string) {
+        return !Pattern.compile("^[a-zA-Z0-9-_/]+$").matcher(string).matches();
     }
 }

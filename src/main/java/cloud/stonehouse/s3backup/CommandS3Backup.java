@@ -34,10 +34,15 @@ class CommandS3Backup implements TabExecutor {
                 if (s3Backup.hasPermission(player, "s3backup.backup")) {
                     if (args.length == 2) {
                         String name = args[1];
-                        if (name.contains("/") || name.contains("\\")) {
-                            s3Backup.sendMessage(player, "File separators are not permitted in file names.");
-                        } else {
-                            new Backup(s3Backup, player, name + "-").runTaskAsynchronously(s3Backup);
+                        try {
+                            if (s3Backup.illegalString(name)) {
+                                throw new StringFormatException("Invalid backup name. Only alphanumeric characters, " +
+                                        "underscores and hyphens are permitted");
+                            } else {
+                                new Backup(s3Backup, player, name + "-").runTaskAsynchronously(s3Backup);
+                            }
+                        } catch (StringFormatException e) {
+                            s3Backup.exception(player, "Error", e);
                         }
                     } else {
                         new Backup(s3Backup, player, "manual-").runTaskAsynchronously(s3Backup);
