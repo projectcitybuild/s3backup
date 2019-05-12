@@ -1,0 +1,11 @@
+access-key-id: ''
+access-key-secret: ''
+backup-date-format: dd-MM-yyyy-HH-mm-ss
+backup-interval: 240
+bucket: ''
+debug: false
+ignore-files:
+  - s3backup/config.yml
+max-backups: 60
+prefix: ''
+region: us-west-2

@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -45,8 +46,9 @@ class Archive {
             }
             File[] children = fileToZip.listFiles();
             for (File childFile : children) {
+                String childPath = childFile.getCanonicalPath();
                 if (!childFile.getName().startsWith(s3Backup.getFileConfig().getBackupDir()) &&
-                        !childFile.getCanonicalPath().endsWith("s3backup/config.yml")) {
+                        Arrays.stream(s3Backup.getFileConfig().getIgnoreFiles()).noneMatch(childPath::endsWith)) {
                     try {
                         zipFile(player, childFile, fileName + File.separator + childFile.getName(), zipOut);
                     } catch (IOException e) {
