@@ -24,16 +24,20 @@ It is recommended that default s3 encryption at rest or via a custom KMS key be 
 This configuration will produce a `zip` backup of the server directory every 4 hours and upload it to your s3 bucket with the path `my-backup-bucket/s3backup/00-00-0000-00-00-00.zip`.
 
 The backup process will also remove any old backups beyond the `max-backups`. This can be set to `0` if you would like to manage this yourself by other means.
+
+File paths can be added to `ignore-files` if you do not want certain files to be contained in the backup. Useful for sensitive information. By default, the s3backup configuration is not included, as it may contain AWS access keys.
 ```
-backup-date-format: dd-MM-yyyy-HH-mm-ss
-backup-interval: 240
-debug: false
-max-backups: 60
-region: eu-west-1
 access-key-id: AKIAIOSFODNN7EXAMPLE
 access-key-secret: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+backup-date-format: dd-MM-yyyy-HH-mm-ss
+backup-interval: 240
 bucket: my-backup-bucket
+debug: false
+ignore-files:
+  - s3backup/config.yml
+max-backups: 60
 prefix: s3backup/
+region: eu-west-1
 ```
 
 Backup names (including date format) and bucket prefix must only consist of alphanumeric characters, hyphens or underscores. The prefix can also contain forward slashes to denote folders in s3 (useful for seperating multi-server backups in one bucket).
@@ -41,9 +45,9 @@ Backup names (including date format) and bucket prefix must only consist of alph
 ## Commands
 - `/s3backup` - Displays command usage.
 - `/s3backup backup [name]` - Initiates a manual backup. Optional name to prepend.
-- `/s3backup list` - Lists the backups in s3.
-- `/s3backup get [backup]` - Downloads the specified backup to the `local-prefix` directory specified in the configuration.
 - `/s3backup delete [backup]` - Deletes the specified backup in s3.
+- `/s3backup get [backup]` - Downloads the specified backup to the local `backup` directory.
+- `/s3backup list` - Lists the backups in s3.
 - `/s3backup sign [backup]` - Generates a temporary URL to download a backup locally.
 
 All commands auto-complete including the `get` and `delete` commands to fill in backup names.
