@@ -1,11 +1,39 @@
+################################################
+#            s3backup configuration            #
+################################################
+
+# AWS access keys for authentication
+# Leave these blank if you wish to use an instance profile
 access-key-id: ''
 access-key-secret: ''
+
+# See https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html for formatting options
+# Note only hyphens and underscores are permitted alongside alphanumeric characters
 backup-date-format: dd-MM-yyyy-HH-mm-ss
+
+# Interval in minutes in which to create an automatic backup
 backup-interval: 240
+
+# Name of your s3 bucket
 bucket: ''
+
+# Enable this only for debugging. It will print stack traces to the console alongside normal error messages
 debug: false
+
+# List of files to omit from a backup. Useful for files with sensitive information
+# These are matched in reverse. So a value of 'config.yml' will omit all config files found in the server root
+# Note that servers running on Windows will need to use '\' for file separators
 ignore-files:
   - s3backup/config.yml
+  - s3backup\config.yml
+
+# Maximum backups in s3 before automatically deleting the oldest. Set to 0 to disable this
 max-backups: 60
+
+# Optional prefix to prepend to the backup in s3. Useful for having one bucket for multiple servers
+# This is not visible to the plugin when listing/getting backups etc
+# Forward slashes denote a folder in s3. So a value of 's3backup/' will store all backups in a folder called s3backup
 prefix: ''
+
+# Region in which your s3 bucket resides
 region: us-west-2
