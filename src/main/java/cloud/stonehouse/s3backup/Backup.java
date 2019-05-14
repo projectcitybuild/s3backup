@@ -21,7 +21,7 @@ class Backup extends BukkitRunnable {
         this.customPrefix = customPrefix;
         this.s3Backup = s3Backup;
         this.player = player;
-        s3Backup.sendMessage(player, "Saving worlds");
+        s3Backup.sendMessage(player, "Saving worlds. This will take a moment");
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-off");
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-all");
         s3Backup.sendMessage(player, "Worlds saved");
