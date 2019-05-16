@@ -1,7 +1,7 @@
 name: s3backup
-version: '1.0.0'
+version: '1.0.1'
 main: cloud.stonehouse.s3backup.S3Backup
-api-version: '1.14'
+api-version: '1.14.1'
 
 commands:
   s3backup:
