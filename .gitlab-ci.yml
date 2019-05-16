@@ -34,6 +34,7 @@ cache:
 stages:
   - build
   - deploy
+  - publish
 
 # This will only validate and compile stuff and run e.g. maven-enforcer-plugin.
 # Because some enforcer rules might check dependency convergence and class duplications
@@ -48,14 +49,22 @@ validate:jdk8:
   <<: *validate
   image: maven:3.3.9-jdk-8
 
-# For `master` branch run `mvn package` automatically.
+# For tags run `mvn package` automatically.
 package:jdk8:
   stage: deploy
   script:
     - 'mvn $MAVEN_CLI_OPTS package'
   only:
-    - master
+    - tags
   artifacts:
     paths:
-    - target/s3backup*.jar
+    - target/s3backup-$CI_BUILD_TAG.jar
   image: maven:3.3.9-jdk-8
+
+publish:
+    image: inetprocess/gitlab-release
+    stage: publish
+    only:
+        - tags
+    script:
+        - gitlab-release --message 'Download' target/s3backup-$CI_BUILD_TAG.jar
