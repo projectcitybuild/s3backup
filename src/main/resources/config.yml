@@ -7,6 +7,8 @@
 access-key-id: ''
 access-key-secret: ''
 
+signed-url-duration: 60
+
 # For use with third party s3 servers such as Minio
 custom-endpoint: ''
 signer-override: 'AWSS3V4SignerType'

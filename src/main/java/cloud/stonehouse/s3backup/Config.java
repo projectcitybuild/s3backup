@@ -21,6 +21,7 @@ public class Config {
     private final Boolean pathStyleAccess;
     private final String prefix;
     private final String region;
+    private final Integer signedUrlDuration;
     private final String signerOverride;
 
     Config(S3Backup s3Backup) {
@@ -43,6 +44,7 @@ public class Config {
         pathStyleAccess = config.getBoolean("path-style-access");
         prefix = config.getString("prefix");
         region = config.getString("region");
+        signedUrlDuration = config.getInt("signed-url-duration");
         signerOverride = config.getString("signer-override");
     }
 
@@ -104,6 +106,10 @@ public class Config {
 
     public String getRegion() {
         return region;
+    }
+
+    public Integer getSignedUrlDuration() {
+        return signedUrlDuration;
     }
 
     public String getSignerOverride() {
