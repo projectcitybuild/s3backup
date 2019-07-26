@@ -22,7 +22,7 @@ public class S3Sign {
             try {
                 Date expiration = new Date();
                 long expire = expiration.getTime();
-                expire += 1000 * 60 * 60;
+                expire += 1000 * 60 * s3Backup.getFileConfig().getSignedUrlDuration();
                 expiration.setTime(expire);
 
                 GeneratePresignedUrlRequest urlRequest =
