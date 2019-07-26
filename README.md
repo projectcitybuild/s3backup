@@ -84,7 +84,8 @@ The resource ARN will need to have the `prefix` appended if used as shown below.
             "Action": [
                 "s3:PutObject",
                 "s3:GetObject",
-                "s3:DeleteObject"
+                "s3:DeleteObject",
+                "s3:ListMultipartUploadParts"
             ],
             "Resource": [
                 "arn:aws:s3:::my-backup-bucket/s3backup/*"
