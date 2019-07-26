@@ -75,7 +75,7 @@ The resource ARN will need to have the `prefix` appended if used as shown below.
                 "s3:ListBucket"
             ],
             "Resource": [
-                "arn:aws:s3:::my-backup-bucket"
+                "arn:aws:s3:::my-backup-bucket",
                 "arn:aws:s3:::my-backup-bucket/*"
             ]
         },
