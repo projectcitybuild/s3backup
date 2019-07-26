@@ -7,6 +7,11 @@
 access-key-id: ''
 access-key-secret: ''
 
+# For use with third party s3 servers such as Minio
+custom-endpoint: ''
+signer-override: 'AWSS3V4SignerType'
+path-style-access: true
+
 # See https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html for formatting options
 # Note only hyphens and underscores are permitted alongside alphanumeric characters
 backup-date-format: dd-MM-yyyy-HH-mm-ss

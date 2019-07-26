@@ -108,7 +108,11 @@ public class S3Backup extends JavaPlugin {
     }
 
     boolean illegalPrefix(String string) {
-        return !Pattern.compile("^[a-zA-Z0-9-_/]+$").matcher(string).matches();
+        if (string.equals("")) {
+            return false;
+        } else {
+            return !Pattern.compile("^[a-zA-Z0-9-_/]+$").matcher(string).matches();
+        }
     }
 
     public void sendMessage(Player player, String message) {

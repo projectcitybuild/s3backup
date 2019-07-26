@@ -12,13 +12,16 @@ public class Config {
     private final String backupDateFormat;
     private final int backupInterval;
     private final String chatPrefix;
+    private final String customEndpoint;
     private final String bucket;
     private final Boolean debug;
     private final String helpString;
     private final String[] ignoreFiles;
     private final int maxBackups;
+    private final Boolean pathStyleAccess;
     private final String prefix;
     private final String region;
+    private final String signerOverride;
 
     Config(S3Backup s3Backup) {
         this.s3Backup = s3Backup;
@@ -32,12 +35,15 @@ public class Config {
         backupInterval = config.getInt("backup-interval");
         bucket = config.getString("bucket");
         chatPrefix = "§7[§es3backup§7] ";
+        customEndpoint = config.getString("custom-endpoint");
         debug = config.getBoolean("debug");
         helpString = "/s3backup [<backup <name>> <list>] [<get delete sign> <backup>]";
         ignoreFiles = config.getList("ignore-files").toArray(new String[0]);
         maxBackups = config.getInt("max-backups");
+        pathStyleAccess = config.getBoolean("path-style-access");
         prefix = config.getString("prefix");
         region = config.getString("region");
+        signerOverride = config.getString("signer-override");
     }
 
     public String getAccessKeyId() {
@@ -68,6 +74,10 @@ public class Config {
         return chatPrefix;
     }
 
+    public String getCustomEndpoint() {
+        return customEndpoint;
+    }
+
     Boolean getDebug() {
         return debug;
     }
@@ -84,11 +94,19 @@ public class Config {
         return maxBackups;
     }
 
+    public Boolean getPathStyleAccess() {
+        return pathStyleAccess;
+    }
+
     public String getPrefix() {
         return prefix;
     }
 
     public String getRegion() {
         return region;
+    }
+
+    public String getSignerOverride() {
+        return signerOverride;
     }
 }
