@@ -7,7 +7,7 @@ Also provides ways of downloading the backups for restoration.
  - An AWS account.
  - An AWS s3 bucket.
 
-A 3rd party solution such as [Minio](https://min.io/) can also be used and self hosted. The plugin configuration for this is mostly the same (see [plugin configuration](#plugin-configuration)). You will need a valid SSL certificate for this. [Let’s Encrypt](https://letsencrypt.org/) is recommended.
+A 3rd party solution such as [Minio](https://min.io/) can also be used and self hosted. The plugin configuration for this is mostly the same (see [plugin configuration](#plugin-configuration)). You will need a valid SSL certificate for HTTPS configured on your custom endpoint. [Let’s Encrypt](https://letsencrypt.org/) is recommended.
 
 The AWS resources used are not managed by this plugin. They can either be created through the console or via tools such as Terraform. This is to leave the AWS side open ended. You can then configure things such as Emails through SES via bucket event notifications and s3 lifecycles yourself.
 
