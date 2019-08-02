@@ -7,7 +7,7 @@ Also provides ways of downloading the backups for restoration.
  - An AWS account.
  - An AWS s3 bucket.
 
-A 3rd party solution such as [Minio](https://min.io/) can also be used and self hosted. The plugin configuration for this is mostly the same (see [plugin configuration](#plugin-configuration)).
+A 3rd party solution such as [Minio](https://min.io/) can also be used and self hosted. The plugin configuration for this is mostly the same (see [plugin configuration](#plugin-configuration)). You will need a valid SSL certificate for this. [Let’s Encrypt](https://letsencrypt.org/) is recommended.
 
 The AWS resources used are not managed by this plugin. They can either be created through the console or via tools such as Terraform. This is to leave the AWS side open ended. You can then configure things such as Emails through SES via bucket event notifications and s3 lifecycles yourself.
 
@@ -49,7 +49,7 @@ backup-date-format: dd-MM-yyyy-HH-mm-ss
 backup-interval: 240
 
 # Name of your s3 bucket
-bucket: ''
+bucket: 'my-backup-bucket'
 
 # Enable this only for debugging. It will print stack traces to the console alongside normal error messages
 debug: false
@@ -67,11 +67,12 @@ max-backups: 60
 # Optional prefix to prepend to the backup in s3. Useful for having one bucket for multiple servers
 # This is not visible to the plugin when listing/getting backups etc
 # Forward slashes denote a folder in s3. So a value of 's3backup/' will store all backups in a folder called s3backup
-prefix: ''
+prefix: 's3backup/'
 
 # Region in which your s3 bucket resides
 region: us-west-2
 ```
+For 3rd party storage solutions `custom-endpoint` will need to be set. E.g. `custom-endpoint: 'https://minio.mydomain.com:9000'`.
 
 Backup names (including date format) and bucket prefix must only consist of alphanumeric characters, hyphens or underscores. The prefix can also contain forward slashes to denote folders in s3 (useful for seperating multi-server backups in one bucket).
 
