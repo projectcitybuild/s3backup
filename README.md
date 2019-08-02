@@ -1,5 +1,5 @@
 # s3backup [![pipeline](https://gitlab.com/steve.stonehouse/s3backup/badges/master/pipeline.svg)](https://gitlab.com/steve-stonehouse/s3backup/commits/master)
-A simple plugin for Spigot that uploads compressed backups of your server to s3.
+A simple plugin for Spigot that uploads compressed backups of your server to s3 or an s3 compatible server.
 
 Also provides ways of downloading the backups for restoration.
 
@@ -7,7 +7,9 @@ Also provides ways of downloading the backups for restoration.
  - An AWS account.
  - An AWS s3 bucket.
 
-The AWS resources are not managed by this plugin. They can either be created through the console or via tools such as Terraform. This is to leave the AWS side open ended. You can then configure things such as Emails through SES via bucket event notifications and s3 lifecycles yourself.
+A 3rd party solution such as [Minio](https://min.io/) can also be used and self hosted. The plugin configuration for this is mostly the same (see [plugin configuration](#plugin-configuration)).
+
+The AWS resources used are not managed by this plugin. They can either be created through the console or via tools such as Terraform. This is to leave the AWS side open ended. You can then configure things such as Emails through SES via bucket event notifications and s3 lifecycles yourself.
 
 It is recommended that default s3 encryption at rest or via a custom KMS key be enabled for the s3 bucket as plugin configurations and data can contain sensitive information.
 
@@ -16,8 +18,8 @@ It is recommended that default s3 encryption at rest or via a custom KMS key be 
  - An IAM group where the IAM user is a member.
  - A policy assigned to the IAM user's group to grant access to the s3 bucket.
 
-### IAM profile (only for servers running on EC2)
-- An instance profile attached to the EC2 instance where the server is running.
+### IAM profile (only for servers running on AWS)
+- An instance profile attached to the instance where the server is running.
 - A policy assigned to the profile to grant access to the s3 bucket.
 
 ## Plugin configuration
@@ -27,17 +29,48 @@ The backup process will also remove any old backups beyond the `max-backups`. Th
 
 File paths can be added to `ignore-files` if you do not want certain files to be contained in the backup. Useful for sensitive information. By default, the s3backup configuration is not included, as it may contain AWS access keys.
 ```
+# AWS access keys for authentication
+# Leave these blank if you wish to use an instance profile
 access-key-id: AKIAIOSFODNN7EXAMPLE
 access-key-secret: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+
+signed-url-duration: 60
+
+# For use with third party s3 servers such as Minio
+custom-endpoint: ''
+signer-override: 'AWSS3V4SignerType'
+path-style-access: true
+
+# See https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html for formatting options
+# Note only hyphens and underscores are permitted alongside alphanumeric characters
 backup-date-format: dd-MM-yyyy-HH-mm-ss
+
+# Interval in minutes in which to create an automatic backup
 backup-interval: 240
-bucket: my-backup-bucket
+
+# Name of your s3 bucket
+bucket: ''
+
+# Enable this only for debugging. It will print stack traces to the console alongside normal error messages
 debug: false
+
+# List of files to omit from a backup. Useful for files with sensitive information
+# These are matched in reverse. So a value of 'config.yml' will omit all config files found in the server root
+# Note that servers running on Windows will need to use '\' for file separators
 ignore-files:
   - s3backup/config.yml
+  - s3backup\config.yml
+
+# Maximum backups in s3 before automatically deleting the oldest. Set to 0 to disable this
 max-backups: 60
-prefix: s3backup/
-region: eu-west-1
+
+# Optional prefix to prepend to the backup in s3. Useful for having one bucket for multiple servers
+# This is not visible to the plugin when listing/getting backups etc
+# Forward slashes denote a folder in s3. So a value of 's3backup/' will store all backups in a folder called s3backup
+prefix: ''
+
+# Region in which your s3 bucket resides
+region: us-west-2
 ```
 
 Backup names (including date format) and bucket prefix must only consist of alphanumeric characters, hyphens or underscores. The prefix can also contain forward slashes to denote folders in s3 (useful for seperating multi-server backups in one bucket).
