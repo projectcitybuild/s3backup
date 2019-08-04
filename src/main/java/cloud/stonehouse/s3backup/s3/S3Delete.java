@@ -13,6 +13,7 @@ public class S3Delete {
 
     public void delete(Player player, String backup) {
         String filePrefix = s3Backup.getFileConfig().getPrefix() + backup;
+
         try {
             if (s3Backup.backupExists(filePrefix)) {
                 s3Backup.getClient().deleteObject(s3Backup.getFileConfig().getBucket(), filePrefix);

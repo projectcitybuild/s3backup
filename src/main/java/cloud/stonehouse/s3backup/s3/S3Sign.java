@@ -18,6 +18,7 @@ public class S3Sign {
 
     public void sign(Player player, String backup) {
         String filePrefix = s3Backup.getFileConfig().getPrefix() + backup;
+
         if (s3Backup.backupExists(filePrefix)) {
             try {
                 Date expiration = new Date();

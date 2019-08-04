@@ -2,14 +2,13 @@ package cloud.stonehouse.s3backup;
 
 import cloud.stonehouse.s3backup.s3.S3Get;
 import cloud.stonehouse.s3backup.s3.S3List;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 class CommandS3Backup implements TabExecutor {
 
@@ -52,7 +51,17 @@ class CommandS3Backup implements TabExecutor {
                 }
             } else if (args[0].equalsIgnoreCase("list")) {
                 if (s3Backup.hasPermission(player, "s3backup.list")) {
-                    ArrayList<String> backups = s3Backup.s3List().list(player, true);
+                    int limit = 0;
+
+                    if (args.length == 2) {
+                        try {
+                            limit = Integer.parseInt(args[1]);
+                        } catch (NumberFormatException e) {
+                            s3Backup.sendMessage(player, "Invalid number to list");
+                            return false;
+                        }
+                    }
+                    TreeMap<Date, S3ObjectSummary> backups = s3Backup.s3List().list(player, true, limit);
                     if (backups.size() == 0) {
                         s3Backup.sendMessage(player, "There are no backups to list");
                     }
@@ -115,6 +124,7 @@ class CommandS3Backup implements TabExecutor {
         if (args.length == 1) {
             if (s3Backup.hasPermission(player, "s3backup")) {
                 List<String> result = new ArrayList<>();
+
                 if (!args[0].equals("")) {
                     for (String type : types) {
                         if (type.toLowerCase().startsWith(args[0].toLowerCase())) {
@@ -138,7 +148,12 @@ class CommandS3Backup implements TabExecutor {
                     (args[0].equalsIgnoreCase("sign") &&
                             s3Backup.hasPermission(player, "s3backup.sign"))) {
 
-                ArrayList<String> backups = new S3List(s3Backup).list(null, false);
+                TreeMap<Date, S3ObjectSummary> backupMap = new S3List(s3Backup).list(null, false, 0);
+                ArrayList<String> backups = new ArrayList<>();
+
+                for (S3ObjectSummary backup : backupMap.values()) {
+                    backups.add(backup.getKey().replace(s3Backup.getFileConfig().getPrefix(), ""));
+                }
 
                 if (!args[1].equals("")) {
                     for (String backup : backups) {
