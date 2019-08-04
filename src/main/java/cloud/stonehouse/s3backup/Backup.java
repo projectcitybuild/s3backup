@@ -1,6 +1,7 @@
 package cloud.stonehouse.s3backup;
 
 import cloud.stonehouse.s3backup.s3.S3List;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -8,8 +9,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.io.File;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.TreeMap;
 
 class Backup extends BukkitRunnable {
 
@@ -55,11 +56,14 @@ class Backup extends BukkitRunnable {
 
             int maxBackups = s3Backup.getFileConfig().getMaxBackups();
             if (maxBackups > 0) {
-                ArrayList<String> backups = new S3List(s3Backup).list(null, false);
+                TreeMap<Date, S3ObjectSummary> backups = new S3List(s3Backup).list(null, false, 0);
+
                 while (backups.size() > maxBackups) {
-                    String remove = backups.get(0);
-                    backups.remove(0);
-                    s3Backup.s3Delete().delete(player, remove);
+                    Date remove = backups.firstKey();
+
+                    backups.remove(remove);
+                    s3Backup.s3Delete().delete(player, backups.get(remove).getKey().replace(s3Backup.getFileConfig()
+                            .getPrefix(), ""));
                 }
             }
 
