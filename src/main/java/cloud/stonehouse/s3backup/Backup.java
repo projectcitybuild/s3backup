@@ -61,9 +61,9 @@ class Backup extends BukkitRunnable {
                 while (backups.size() > maxBackups) {
                     Date remove = backups.firstKey();
 
-                    backups.remove(remove);
                     s3Backup.s3Delete().delete(player, backups.get(remove).getKey().replace(s3Backup.getFileConfig()
                             .getPrefix(), ""));
+                    backups.remove(remove);
                 }
             }
 
