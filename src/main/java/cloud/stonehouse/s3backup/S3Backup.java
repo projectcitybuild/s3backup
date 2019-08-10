@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 public class S3Backup extends JavaPlugin {
 
     private Archive archive;
+    private Boolean backupInProgress;
     private AmazonS3 client;
     private BukkitTask scheduler;
     private Config config;
@@ -42,6 +43,8 @@ public class S3Backup extends JavaPlugin {
         scheduler = new Scheduler(this).runTaskTimer(this,
                 20 * 60 * backupInterval,
                 20 * 60 * backupInterval);
+
+        setProgress(false);
 
         new Metrics(this);
     }
@@ -123,11 +126,19 @@ public class S3Backup extends JavaPlugin {
         }
     }
 
+    boolean inProgress() {
+        return backupInProgress;
+    }
+
     public void sendMessage(Player player, String message) {
         if (player != null) {
             player.sendMessage(getFileConfig().getChatPrefix() + message);
         } else {
             getLogger().info(message);
         }
+    }
+
+    void setProgress(Boolean progress) {
+        backupInProgress = progress;
     }
 }
