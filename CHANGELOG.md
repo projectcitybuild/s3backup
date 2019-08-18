@@ -1,3 +1,8 @@
+## 1.1.5
+
+### Bugfixes
+- Relocate `org.apache` to resolve dependency conflicts.
+
 ## 1.1.4
 
 ### Bugfixes
