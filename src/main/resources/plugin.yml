@@ -1,5 +1,5 @@
 name: s3backup
-version: '1.1.5'
+version: '1.1.6'
 main: cloud.stonehouse.s3backup.S3Backup
 api-version: '1.15'
 
