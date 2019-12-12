@@ -1,4 +1,4 @@
-# s3backup [![pipeline](https://gitlab.com/steve.stonehouse/s3backup/badges/master/pipeline.svg)](https://gitlab.com/steve-stonehouse/s3backup/commits/master)
+# s3backup
 A simple plugin for Spigot that uploads compressed backups of your server to s3 or an s3 compatible server.
 
 Also provides ways of downloading the backups for restoration.

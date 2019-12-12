@@ -1,3 +1,10 @@
+## 1.1.6
+
+### New
+- Update to support Spigot 1.15
+- Update bStats
+- Update AWS s3 SDK
+
 ## 1.1.5
 
 ### Bugfixes
