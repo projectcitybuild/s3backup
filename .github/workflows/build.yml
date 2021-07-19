@@ -10,6 +10,8 @@ on:
       - '*'
   pull_request:
     branches: [ master ]
+  release:
+    types: [created] # for manually created released
 
 jobs:
   build:
@@ -41,5 +43,6 @@ jobs:
         with:
           files: target/s3backup*.jar
           fail_on_unmatched_files: true
+          body: See [CHANGELOG.md](CHANGELOG.md) for changes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
