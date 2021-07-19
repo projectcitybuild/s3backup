@@ -18,11 +18,13 @@ class Backup extends BukkitRunnable {
     private final String customPrefix;
     private final S3Backup s3Backup;
     private final Player player;
+    private final boolean dryRun;
 
-    Backup(S3Backup s3Backup, Player player, String customPrefix) {
+    Backup(S3Backup s3Backup, Player player, String customPrefix, boolean dryRun) {
         this.customPrefix = customPrefix;
         this.s3Backup = s3Backup;
         this.player = player;
+        this.dryRun = dryRun;
 
         this.backupInProgress = s3Backup.inProgress();
 
@@ -59,7 +61,13 @@ class Backup extends BukkitRunnable {
                 s3Backup.sendMessage(player, "Backup initiated");
                 String archivePath = backupDir + File.separator + archiveName;
 
-                s3Backup.archive().zipFile(player, Paths.get("").toAbsolutePath().normalize().toString(), archivePath);
+                s3Backup.archive().zipFile(player, Paths.get("").toAbsolutePath().normalize().toString(), archivePath, dryRun);
+
+                if (dryRun) {
+                    s3Backup.sendMessage(player, "Backup completed! This was a dry run.");
+                    return;
+                }
+
                 s3Backup.s3Put().put(archiveName);
                 s3Backup.archive().deleteFile(archivePath);
 
