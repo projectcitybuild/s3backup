@@ -28,8 +28,10 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
-      - name: Build with Maven
+      - name: Build with Gradle
         run: gradle jar
+      - name: Stop Daemon
+        run: gradle --stop
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.4
         with:
