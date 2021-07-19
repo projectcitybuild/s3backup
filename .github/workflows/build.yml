@@ -1,7 +1,4 @@
-# This workflow will build a Java project with Maven
-# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
-
-name: Java CI with Maven
+name: Gradle Build
 
 on:
   push:
@@ -23,25 +20,26 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
-      - name: Cache local Maven repository
-        uses: actions/cache@v2
+      - uses: actions/cache@v2
         with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
-            ${{ runner.os }}-maven-
+            ${{ runner.os }}-gradle-
       - name: Build with Maven
-        run: mvn -B package --file pom.xml
+        run: gradle jar
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.4
         with:
-          path: target/s3backup*.jar
+          path: build/libs/s3backup*.jar
           if-no-files-found: warn
       - name: Create release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: target/s3backup*.jar
+          files: build/libs/s3backup*.jar
           fail_on_unmatched_files: true
           body: See [CHANGELOG.md](CHANGELOG.md) for changes
         env:
