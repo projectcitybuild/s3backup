@@ -21,8 +21,8 @@ jobs:
           distribution: 'adopt'
       - name: Build with Maven
         run: mvn -B package --file pom.xml
-  - name: Upload a Build Artifact
-    uses: actions/upload-artifact@v2.2.4
-    with:
-      path: target/s3backup*.jar
-      if-no-files-found: warn
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2.2.4
+        with:
+          path: target/s3backup*.jar
+          if-no-files-found: warn
