@@ -48,7 +48,7 @@ class Archive {
             for (File childFile : children) {
                 String childPath = childFile.getCanonicalPath();
                 if (!childFile.getName().startsWith(s3Backup.getFileConfig().getBackupDir()) &&
-                        Arrays.stream(s3Backup.getFileConfig().getIgnoreFiles()).noneMatch(childPath::endsWith)) {
+                        Arrays.stream(s3Backup.getFileConfig().getIgnoreFiles()).noneMatch(childPath::contains)) {
                     try {
                         zipFile(player, childFile, fileName + File.separator + childFile.getName(), zipOut);
                     } catch (IOException e) {

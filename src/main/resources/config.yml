@@ -28,8 +28,7 @@ bucket: ''
 debug: false
 
 # List of files to omit from a backup. Useful for files with sensitive information
-# These are matched in reverse. So a value of 'config.yml' will omit all config files found in the server root
-# Note that servers running on Windows will need to use '\' for file separators
+# Files will be ignored if they contain this substring anywhere
 ignore-files:
   - s3backup/config.yml
   - s3backup\config.yml

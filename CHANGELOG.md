@@ -1,3 +1,9 @@
+# 2.0.0
+
+### Breaking Changes
+
+- The config `ignore-files`  setting will now ignore a file if the ignore string is present anywhere in its path
+
 ## 1.1.6
 
 ### New
