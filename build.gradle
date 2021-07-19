@@ -17,6 +17,7 @@ repositories {
 dependencies {
     implementation 'com.amazonaws:aws-java-sdk-s3:1.11.690'
     implementation 'org.bstats:bstats-bukkit:1.5'
+    compile 'club.minnced:discord-webhooks:0.5.7'
     compileOnly 'org.spigotmc:spigot-api:1.15-R0.1-SNAPSHOT'
 }
 
