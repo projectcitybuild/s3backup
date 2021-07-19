@@ -3,6 +3,8 @@ A simple plugin for Spigot that uploads compressed backups of your server to s3 
 
 Also provides ways of downloading the backups for restoration.
 
+This plugin is a fork of [Steve Stonehouse's plugin](https://gitlab.com/steve.stonehouse/s3backup) with different logic for path exclusion.
+
 ## Requirements
  - An AWS account.
  - An AWS s3 bucket.
