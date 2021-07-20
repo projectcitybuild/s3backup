@@ -80,6 +80,7 @@ Backup names (including date format) and bucket prefix must only consist of alph
 ## Commands
 - `/s3backup` - Displays command usage.
 - `/s3backup backup [name]` - Initiates a manual backup. Optional name to prepend.
+- `/s3backup dry-run` - Save a list of server files that are included in a backup.
 - `/s3backup delete [backup]` - Deletes the specified backup in s3.
 - `/s3backup get [backup]` - Downloads the specified backup to the local `backup` directory.
 - `/s3backup list` - Lists the backups in s3.

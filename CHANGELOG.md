@@ -1,4 +1,9 @@
-# 2.0.0
+## 2.1.0
+
+### New
+- Added `/s3backup dry-run`, which saves a file with a list of server files that would be included with the backup
+
+## 2.0.0
 
 ### Breaking Changes
 
