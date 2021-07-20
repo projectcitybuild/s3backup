@@ -17,7 +17,7 @@ public class NotificationFactory {
     }
 
     public NotificationFactory setIsSuccessful() {
-        builder.setColor(0x008000);
+        builder.setColor(0x218838);
         return this;
     }
 
@@ -27,7 +27,7 @@ public class NotificationFactory {
     }
 
     public NotificationFactory setIsFailure() {
-        builder.setColor(0xff2052);
+        builder.setColor(0xb10e1e);
         return this;
     }
 

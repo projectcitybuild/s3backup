@@ -1,6 +1,7 @@
 package cloud.stonehouse.s3backup;
 
 import cloud.stonehouse.s3backup.notifications.BackupFailureNotification;
+import cloud.stonehouse.s3backup.notifications.BackupPurgedNotification;
 import cloud.stonehouse.s3backup.notifications.BackupStartedNotification;
 import cloud.stonehouse.s3backup.notifications.BackupSuccessNotification;
 import cloud.stonehouse.s3backup.s3.S3List;
@@ -88,6 +89,7 @@ class Backup extends BukkitRunnable {
                         s3Backup.s3Delete().delete(player, backups.get(remove).getKey().replace(s3Backup.getFileConfig()
                                 .getPrefix(), ""));
                         backups.remove(remove);
+                        s3Backup.discordWebhook().send(new BackupPurgedNotification());
                     }
                 }
 
