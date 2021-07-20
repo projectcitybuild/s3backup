@@ -6,7 +6,7 @@ public class BackupStartedNotification implements DiscordNotification{
     @Override
     public WebhookEmbed build() {
         return NotificationFactory.create()
-                .setIsSuccessful()
+                .setIsInfo()
                 .setMessage("Backup has been started")
                 .build();
     }
