@@ -2,7 +2,6 @@ package cloud.stonehouse.s3backup;
 
 import cloud.stonehouse.s3backup.s3.*;
 import com.amazonaws.services.s3.AmazonS3;
-import org.bstats.bukkit.Metrics;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -45,8 +44,6 @@ public class S3Backup extends JavaPlugin {
                 20 * 60 * backupInterval);
 
         setProgress(false);
-
-        new Metrics(this);
     }
 
     @Override
@@ -73,6 +70,7 @@ public class S3Backup extends JavaPlugin {
     Archive archive() {
         return archive;
     }
+
 
     public String convertBytes(long bytes, boolean si) {
         int unit = si ? 1000 : 1024;
