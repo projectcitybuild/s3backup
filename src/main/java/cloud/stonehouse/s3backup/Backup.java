@@ -1,5 +1,8 @@
 package cloud.stonehouse.s3backup;
 
+import cloud.stonehouse.s3backup.notifications.BackupFailureNotification;
+import cloud.stonehouse.s3backup.notifications.BackupStartedNotification;
+import cloud.stonehouse.s3backup.notifications.BackupSuccessNotification;
 import cloud.stonehouse.s3backup.s3.S3List;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import org.bukkit.Bukkit;
@@ -59,6 +62,7 @@ class Backup extends BukkitRunnable {
                 String backupDir = s3Backup.getFileConfig().getBackupDir();
 
                 s3Backup.sendMessage(player, "Backup initiated");
+                s3Backup.discordWebhook().send(new BackupStartedNotification());
                 String archivePath = backupDir + File.separator + archiveName;
 
                 s3Backup.archive().zipFile(player, Paths.get("").toAbsolutePath().normalize().toString(), archivePath, dryRun);
@@ -72,6 +76,7 @@ class Backup extends BukkitRunnable {
                 s3Backup.archive().deleteFile(archivePath);
 
                 s3Backup.sendMessage(player, "Backup complete");
+                s3Backup.discordWebhook().send(new BackupSuccessNotification());
 
                 int maxBackups = s3Backup.getFileConfig().getMaxBackups();
                 if (maxBackups > 0) {
@@ -88,6 +93,7 @@ class Backup extends BukkitRunnable {
 
             } catch (Exception e) {
                 s3Backup.exception(player, "Backup failed", e);
+                s3Backup.discordWebhook().send(new BackupFailureNotification(e));
             } finally {
                 Bukkit.getScheduler().callSyncMethod(s3Backup, () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-on"));
                 s3Backup.setProgress(false);

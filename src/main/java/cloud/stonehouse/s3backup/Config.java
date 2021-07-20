@@ -23,6 +23,7 @@ public class Config {
     private final String region;
     private final Integer signedUrlDuration;
     private final String signerOverride;
+    private final String webhookUrl;
 
     Config(S3Backup s3Backup) {
         this.s3Backup = s3Backup;
@@ -46,6 +47,7 @@ public class Config {
         region = config.getString("region");
         signedUrlDuration = config.getInt("signed-url-duration");
         signerOverride = config.getString("signer-override");
+        webhookUrl = config.getString("webhook-url");
     }
 
     public String getAccessKeyId() {
@@ -114,5 +116,9 @@ public class Config {
 
     public String getSignerOverride() {
         return signerOverride;
+    }
+
+    public String getWebhookUrl() {
+        return webhookUrl;
     }
 }
