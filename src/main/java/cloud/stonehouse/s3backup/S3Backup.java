@@ -1,5 +1,6 @@
 package cloud.stonehouse.s3backup;
 
+import cloud.stonehouse.s3backup.notifications.DiscordWebhook;
 import cloud.stonehouse.s3backup.s3.*;
 import com.amazonaws.services.s3.AmazonS3;
 import org.bukkit.entity.Player;
@@ -21,6 +22,7 @@ public class S3Backup extends JavaPlugin {
     private S3List s3List;
     private S3Put s3Put;
     private S3Sign s3Sign;
+    private DiscordWebhook discordWebhook;
 
     @Override
     public void onEnable() {
@@ -31,6 +33,7 @@ public class S3Backup extends JavaPlugin {
         s3List = new S3List(this);
         s3Put = new S3Put(this);
         s3Sign = new S3Sign(this);
+        discordWebhook = new DiscordWebhook(this);
 
         if (new File(getFileConfig().getBackupDir()).mkdir()) {
             this.sendMessage(null, "Created backup directory");
@@ -50,6 +53,8 @@ public class S3Backup extends JavaPlugin {
     public void onDisable() {
         sendMessage(null, "Stopping backup scheduler");
         scheduler.cancel();
+        sendMessage(null, "Stopping webhook pool.");
+        discordWebhook.close();
     }
 
     public boolean backupExists(String filePrefix) {
@@ -103,6 +108,8 @@ public class S3Backup extends JavaPlugin {
     S3Sign s3Sign() {
         return s3Sign;
     }
+
+    DiscordWebhook discordWebhook() { return discordWebhook; }
 
     boolean hasPermission(Player player, String permission) {
         if (player != null) {

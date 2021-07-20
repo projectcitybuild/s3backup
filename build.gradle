@@ -15,6 +15,7 @@ repositories {
 
 dependencies {
     implementation 'com.amazonaws:aws-java-sdk-s3:1.11.690'
+    implementation 'club.minnced:discord-webhooks:0.5.7'
     compileOnly 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
 }
 

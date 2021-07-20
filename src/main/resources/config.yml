@@ -43,3 +43,6 @@ prefix: ''
 
 # Region in which your s3 bucket resides
 region: us-west-2
+
+# Discord webhook URL
+webhook-url:
