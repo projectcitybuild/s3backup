@@ -72,6 +72,9 @@ prefix: 's3backup/'
 
 # Region in which your s3 bucket resides
 region: us-west-2
+
+# Discord webhook URL
+webhook-url:
 ```
 For 3rd party storage solutions `custom-endpoint` will need to be set. E.g. `custom-endpoint: 'https://minio.mydomain.com:9000'`.
 

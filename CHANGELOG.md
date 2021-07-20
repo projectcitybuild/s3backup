@@ -1,3 +1,7 @@
+## 2.2.0
+### New
+- Added Discord webhooks (requires setting new `webhook-url` config option)
+
 ## 2.1.0
 
 ### New
