@@ -5,10 +5,10 @@ import club.minnced.discord.webhook.send.WebhookEmbed;
 public class BackupPurgedNotification implements DiscordNotification{
 
     @Override
-    public WebhookEmbed build() {
+    public WebhookEmbed build(String prefix) {
         return NotificationFactory.create()
                 .setIsInfo()
-                .setMessage("Old backup purged")
+                .setMessage(prefix + ": Old backup purged")
                 .build();
     }
 }

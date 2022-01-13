@@ -8,15 +8,24 @@ import okhttp3.OkHttpClient;
 
 public class DiscordWebhook {
     private final WebhookClient webhookClient;
+    private final String prefix;
 
     public DiscordWebhook(S3Backup s3Backup) {
         String webhookUrl = s3Backup.getFileConfig().getWebhookUrl();
-
+        prefix = stripPrefix(s3Backup.getFileConfig().getPrefix());
         webhookClient = WebhookClient.withUrl(webhookUrl);
     }
 
+    private String stripPrefix(String fullPrefix) {
+        if (fullPrefix.charAt(fullPrefix.length() - 1) == '/') {
+            return fullPrefix.substring(0, fullPrefix.length() - 1);
+        } else {
+            return fullPrefix;
+        }
+    }
+
     public void send(DiscordNotification notification) {
-        WebhookEmbed embed = notification.build();
+        WebhookEmbed embed = notification.build(prefix);
         webhookClient.send(embed);
     }
 
