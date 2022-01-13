@@ -12,8 +12,16 @@ public class DiscordWebhook {
 
     public DiscordWebhook(S3Backup s3Backup) {
         String webhookUrl = s3Backup.getFileConfig().getWebhookUrl();
-        prefix = s3Backup.getFileConfig().getPrefix();
+        prefix = stripPrefix(s3Backup.getFileConfig().getPrefix());
         webhookClient = WebhookClient.withUrl(webhookUrl);
+    }
+
+    private String stripPrefix(String fullPrefix) {
+        if (fullPrefix.charAt(fullPrefix.length() - 1) == '/') {
+            return fullPrefix.substring(0, fullPrefix.length() - 1);
+        } else {
+            return fullPrefix;
+        }
     }
 
     public void send(DiscordNotification notification) {
