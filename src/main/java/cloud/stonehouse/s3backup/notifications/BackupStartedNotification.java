@@ -4,10 +4,10 @@ import club.minnced.discord.webhook.send.WebhookEmbed;
 
 public class BackupStartedNotification implements DiscordNotification{
     @Override
-    public WebhookEmbed build() {
+    public WebhookEmbed build(String prefix) {
         return NotificationFactory.create()
                 .setIsInfo()
-                .setMessage("Backup has been started")
+                .setMessage(prefix + ": Backup has been started")
                 .build();
     }
 }

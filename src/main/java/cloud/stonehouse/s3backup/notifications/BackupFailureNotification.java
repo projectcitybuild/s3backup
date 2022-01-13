@@ -10,10 +10,10 @@ public class BackupFailureNotification implements DiscordNotification {
     }
 
     @Override
-    public WebhookEmbed build() {
+    public WebhookEmbed build(String prefix) {
         return NotificationFactory.create()
                 .setIsFailure()
-                .setMessage("Backup error encountered")
+                .setMessage(prefix + ": Backup error encountered")
                 .setException(exception)
                 .build();
     }

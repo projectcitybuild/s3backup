@@ -8,15 +8,16 @@ import okhttp3.OkHttpClient;
 
 public class DiscordWebhook {
     private final WebhookClient webhookClient;
+    private final String prefix;
 
     public DiscordWebhook(S3Backup s3Backup) {
         String webhookUrl = s3Backup.getFileConfig().getWebhookUrl();
-
+        prefix = s3Backup.getFileConfig().getPrefix();
         webhookClient = WebhookClient.withUrl(webhookUrl);
     }
 
     public void send(DiscordNotification notification) {
-        WebhookEmbed embed = notification.build();
+        WebhookEmbed embed = notification.build(prefix);
         webhookClient.send(embed);
     }
 
