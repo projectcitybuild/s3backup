@@ -1,3 +1,7 @@
+## 2.3.0
+### New
+- Prefixes Discord messages with the prefix specified in the config
+
 ## 2.2.0
 ### New
 - Added Discord webhooks (requires setting new `webhook-url` config option)
