@@ -7,7 +7,7 @@ public class BackupSuccessNotification implements DiscordNotification{
     public WebhookEmbed build(String prefix) {
         return NotificationFactory.create()
                 .setIsSuccessful()
-                .setMessage(prefix + ":Backup succeeded")
+                .setMessage(prefix + ": Backup succeeded")
                 .build();
     }
 }
