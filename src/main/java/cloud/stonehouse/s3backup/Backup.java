@@ -15,6 +15,7 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TreeMap;
+import java.util.concurrent.CancellationException;
 
 class Backup extends BukkitRunnable {
 
@@ -23,6 +24,7 @@ class Backup extends BukkitRunnable {
     private final S3Backup s3Backup;
     private final Player player;
     private final boolean dryRun;
+    private String archiveName;
 
     Backup(S3Backup s3Backup, Player player, String customPrefix, boolean dryRun) {
         this.customPrefix = customPrefix;
@@ -31,6 +33,9 @@ class Backup extends BukkitRunnable {
         this.dryRun = dryRun;
 
         this.backupInProgress = s3Backup.inProgress();
+
+        archiveName = customPrefix + new SimpleDateFormat(s3Backup.getFileConfig().getBackupDateFormat())
+                .format(new Date()) + ".zip";
 
         if (!backupInProgress) {
             s3Backup.sendMessage(player, "Saving worlds. This will take a moment");
@@ -58,8 +63,6 @@ class Backup extends BukkitRunnable {
                             "hyphens and forward slashes are permitted. Please check config.yml");
                 }
 
-                String archiveName = customPrefix + new SimpleDateFormat(s3Backup.getFileConfig().getBackupDateFormat())
-                        .format(new Date()) + ".zip";
                 String backupDir = s3Backup.getFileConfig().getBackupDir();
 
                 s3Backup.sendMessage(player, "Backup initiated");
@@ -72,6 +75,8 @@ class Backup extends BukkitRunnable {
                     s3Backup.sendMessage(player, "Backup completed! This was a dry run.");
                     return;
                 }
+
+                s3Backup.sendMessage(player, "Backup completed. Uploading to S3");
 
                 s3Backup.s3Put().put(archiveName);
                 s3Backup.archive().deleteFile(archivePath);
@@ -92,7 +97,9 @@ class Backup extends BukkitRunnable {
                         s3Backup.discordWebhook().send(new BackupPurgedNotification());
                     }
                 }
-
+            } catch(CancellationException e) {
+                s3Backup.sendMessage(player, "Backup was cancelled.");
+                s3Backup.startCleanupTask(player, archiveName);
             } catch (Exception e) {
                 s3Backup.exception(player, "Backup failed", e);
                 s3Backup.discordWebhook().send(new BackupFailureNotification(e));
@@ -101,6 +108,5 @@ class Backup extends BukkitRunnable {
                 s3Backup.setProgress(false);
             }
         }
-
     }
 }

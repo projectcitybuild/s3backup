@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CancellationException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -49,6 +50,11 @@ class Archive {
     }
 
     private void zipFile(Player player, File fileToZip, String fileName, ZipOutputStream zipOut, boolean dryRun) throws IOException {
+        if (s3Backup.getCurrentTask().isCancelled()) {
+            s3Backup.sendMessage(null, "Cancelled! Throwing exception");
+            throw new CancellationException();
+        }
+
         if (fileToZip.isDirectory()) {
             if (!dryRun) {
                 if (fileName.endsWith(File.separator)) {

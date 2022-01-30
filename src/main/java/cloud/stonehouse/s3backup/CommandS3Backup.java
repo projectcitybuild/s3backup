@@ -7,6 +7,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
 
@@ -38,20 +39,30 @@ class CommandS3Backup implements TabExecutor {
                                 throw new StringFormatException("Invalid backup name. Only alphanumeric characters, " +
                                         "underscores and hyphens are permitted");
                             } else {
-                                new Backup(s3Backup, player, name + "-", false).runTaskAsynchronously(s3Backup);
+                                BukkitTask task = new Backup(s3Backup, player, name + "-", false).runTaskAsynchronously(s3Backup);
+                                s3Backup.setCurrentTask(task);
                             }
                         } catch (StringFormatException e) {
                             s3Backup.exception(player, "Error", e);
                         }
                     } else {
-                        new Backup(s3Backup, player, "manual-", false).runTaskAsynchronously(s3Backup);
+                        BukkitTask task = new Backup(s3Backup, player, "manual-", false).runTaskAsynchronously(s3Backup);
+                        s3Backup.setCurrentTask(task);
                     }
+                } else {
+                    s3Backup.sendMessage(player, "You do not have permission for this command");
+                }
+            } else if (args[0].equalsIgnoreCase("cancel")) {
+                if (s3Backup.hasPermission(player, "s3backup.cancel")) {
+                    s3Backup.sendMessage(player, "Attempting to cancel backup");
+                    s3Backup.getCurrentTask().cancel();
                 } else {
                     s3Backup.sendMessage(player, "You do not have permission for this command");
                 }
             } else if (args[0].equalsIgnoreCase("dry-run")) {
                 if (s3Backup.hasPermission(player, "s3backup.backup")) {
-                    new Backup(s3Backup, player, "", true).runTaskAsynchronously(s3Backup);
+                    BukkitTask task = new Backup(s3Backup, player, "", true).runTaskAsynchronously(s3Backup);
+                    s3Backup.setCurrentTask(task);
                 } else {
                     s3Backup.sendMessage(player, "You do not have permission for this command");
                 }
