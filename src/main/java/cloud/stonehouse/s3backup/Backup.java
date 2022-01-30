@@ -16,7 +16,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TreeMap;
 import java.util.concurrent.CancellationException;
-import java.util.function.BooleanSupplier;
 
 class Backup extends BukkitRunnable {
 
