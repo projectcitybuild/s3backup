@@ -48,6 +48,7 @@ path-style-access: true
 backup-date-format: dd-MM-yyyy-HH-mm-ss
 
 # Interval in minutes in which to create an automatic backup
+# Set to -1 to disable
 backup-interval: 240
 
 # Name of your s3 bucket
