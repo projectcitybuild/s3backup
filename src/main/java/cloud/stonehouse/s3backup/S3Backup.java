@@ -42,9 +42,12 @@ public class S3Backup extends JavaPlugin {
         Objects.requireNonNull(this.getCommand("s3backup")).setExecutor(new CommandS3Backup(this));
 
         int backupInterval = getFileConfig().getBackupInterval();
-        scheduler = new Scheduler(this).runTaskTimer(this,
-                20 * 60 * backupInterval,
-                20 * 60 * backupInterval);
+
+        if (backupInterval != -1) {
+            scheduler = new Scheduler(this).runTaskTimer(this,
+                    20 * 60 * backupInterval,
+                    20 * 60 * backupInterval);
+        }
 
         setProgress(false);
     }
