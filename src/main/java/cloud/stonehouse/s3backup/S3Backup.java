@@ -15,6 +15,7 @@ public class S3Backup extends JavaPlugin {
 
     private Archive archive;
     private Boolean backupInProgress;
+    private BukkitTask currentTask;
     private AmazonS3 client;
     private BukkitTask scheduler;
     private Config config;
@@ -148,5 +149,17 @@ public class S3Backup extends JavaPlugin {
 
     void setProgress(Boolean progress) {
         backupInProgress = progress;
+    }
+
+    public void startCleanupTask( Player player, String archiveName) {
+        new CancellationCleanup(this, player, archiveName).runTaskAsynchronously(this);
+    }
+
+    public BukkitTask getCurrentTask() {
+        return currentTask;
+    }
+
+    public void setCurrentTask(BukkitTask currentTask) {
+        this.currentTask = currentTask;
     }
 }
